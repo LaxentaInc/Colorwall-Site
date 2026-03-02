@@ -23,23 +23,28 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://www.laxenta.info'),
+  metadataBase: new URL('https://github.com/colorwall/colorwall'),
   title: {
-    default: "ColorWall",
+    default: "ColorWall - Free Live Wallpaper Engine",
     template: "%s | ColorWall"
   },
-  description: "An free & Fast Wallpaper engine made in Rust for win 11/10 and high performance.",
+  description: "ColorWall is a free, blazing fast live wallpaper engine built with Rust for Windows 10/11. Enhance your desktop customization with 4K wallpapers and minimal resource usage.",
   keywords: [
     "wallpaper engine",
+    "free wallpaper engine",
     "live wallpapers",
-    "4k wallpapers",
-    "windows customization",
+    "4k live wallpapers",
+    "windows desktop customization",
     "anime wallpapers",
-    "desktop customization"
+    "desktop customization engine",
+    "rust wallpaper app",
+    "animated wallpapers windows",
   ],
-  authors: [{ name: "Laxenta", url: "https://github.com/shelleyloosespatience" }],
-  creator: "@laxenta.me",
-  publisher: "Laxenta Inc",
+  authors: [{ name: "ColorWall Team", url: "https://github.com/colorwall/colorwall" }],
+  creator: "ColorWall",
+  publisher: "ColorWall",
+  applicationName: "ColorWall",
+  generator: "Next.js",
   formatDetection: {
     email: false,
     address: false,
@@ -53,19 +58,26 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: 'https://www.laxenta.info',
+    url: 'https://github.com/colorwall/colorwall',
     siteName: 'ColorWall',
-    title: 'ColorWall',
-    description: 'An free & Fast Wallpaper engine made in Rust for win 11/10 and high performance.',
+    title: 'ColorWall - Free Live Wallpaper Engine',
+    description: 'ColorWall is a free, blazing fast live wallpaper engine built with Rust for Windows 10/11. Customize your desktop without slowing down your PC.',
     images: [
       {
         url: '/LxColorWall.png',
         width: 1200,
         height: 630,
-        alt: 'ColorWall',
+        alt: 'ColorWall Live Wallpaper Engine',
         type: 'image/png',
       }
     ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'ColorWall - Free Live Wallpaper Engine',
+    description: 'A performance-focused, free live wallpaper engine for Windows. Customize your desktop without slowing down your PC.',
+    creator: '@colorwall_xyz',
+    images: ['/LxColorWall.png'],
   },
   robots: {
     index: true,
@@ -79,7 +91,7 @@ export const metadata: Metadata = {
     },
   },
   alternates: {
-    canonical: 'https://www.laxenta.info',
+    canonical: 'https://github.com/colorwall/colorwall',
   },
 };
 
@@ -101,6 +113,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossOrigin="anonymous" referrerPolicy="no-referrer" />
+      </head>
       <body
         suppressHydrationWarning
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen bg-[var(--bg-primary)] text-[var(--text-primary)]`}

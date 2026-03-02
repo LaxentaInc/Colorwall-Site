@@ -51,7 +51,7 @@ export default function TermsPage() {
                             </p>
                             <ul className="list-disc pl-5 space-y-2 mt-4 text-sm opacity-90">
                                 <li><strong>No Proprietary Forks:</strong> If you modify this software and distribute it (or host it over a network), you <strong>MUST</strong> release your source code under the same AGPL-3.0 license.</li>
-                                <li><strong>Attribution Required:</strong> You must strictly preserve all copyright notices and credit the original authors (Laxenta Inc.).</li>
+                                <li><strong>Attribution Required:</strong> You must strictly preserve all copyright notices and credit the original authors.</li>
                                 <li><strong>Source Disclosure:</strong> You cannot distribute the binary without providing access to the source code.</li>
                             </ul>
                             <div className="mt-4">
@@ -71,7 +71,7 @@ export default function TermsPage() {
                         <section>
                             <h3>3. Liability</h3>
                             <p>
-                                Laxenta Inc. and its contributors are not liable for any damages arising from the use of this software, including
+                                ColorWall and its contributors are not liable for any damages arising from the use of this software, including
                                 but not limited to data loss, hardware issues (though we try our best!), or lost profits.
                             </p>
                         </section>

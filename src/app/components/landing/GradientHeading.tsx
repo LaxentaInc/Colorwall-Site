@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import React from "react";
 
 interface GradientHeadingProps {
-    text: string;
+    text: string | React.ReactNode;
     theme: "dark" | "light";
     className?: string;
     as?: "h1" | "h2" | "h3" | "h4";

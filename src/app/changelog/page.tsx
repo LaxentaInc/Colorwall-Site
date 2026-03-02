@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { Download, Github } from "lucide-react";
 import { Footer } from "@/app/components/Footer";
 import { useTheme } from "@/app/contexts/ThemeContext";
 
@@ -19,15 +20,39 @@ export default function ChangelogPage() {
         <div className={`min-h-screen ${bgColor} ${textColor} font-sans selection:bg-blue-500/30`}>
             {/* Minimal Header */}
             {/* Header removed for global navbar */}
-            <div className="h-16" /> {/* Spacer for fixed navbar */}
 
-            <main className="pt-32 pb-20 px-6">
+            <main className="pt-28 pb-20 px-6">
                 <div className="max-w-2xl mx-auto">
+
+                    {/* Page Header */}
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="mb-16"
+                    >
+                        <h1 className="text-4xl sm:text-5xl font-black tracking-tight mb-4">
+                            Changelog
+                        </h1>
+                        <p className={`text-lg ${mutedText} mb-8`}>
+                            Stay up to date with the latest releases, performance improvements, and bug fixes.
+                        </p>
+
+                        <a
+                            href="https://github.com/colorwall/colorwall/releases/latest"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl
+                                ${isDark ? "bg-white text-black hover:shadow-white/10" : "bg-black text-white hover:shadow-black/10"}`}
+                        >
+                            <Github size={18} />
+                            View Releases
+                        </a>
+                    </motion.div>
 
                     {/* Latest Release Heading */}
                     <div className="mb-16 border-l-2 border-blue-500 pl-6">
                         <div className="flex items-center gap-3 mb-2">
-                            <h1 className="text-3xl font-bold tracking-tight">v3.5.7</h1>
+                            <h2 className="text-3xl font-bold tracking-tight">v3.6.5</h2>
                             <span className={`text-xs px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-500 font-mono`}>
                                 LATEST
                             </span>
@@ -76,7 +101,6 @@ export default function ChangelogPage() {
                             </div>
                         </div>
                     </div>
-
                 </div>
             </main>
 

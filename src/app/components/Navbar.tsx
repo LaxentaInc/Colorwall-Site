@@ -14,6 +14,7 @@ export const Navbar = () => {
     const [isVisible, setIsVisible] = useState(true);
     const [lastScrollY, setLastScrollY] = useState(0);
     const [isHovered, setIsHovered] = useState(false);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
     // Auto-hide logic
     useEffect(() => {
@@ -26,6 +27,7 @@ export const Navbar = () => {
             } else {
                 // Hide if scrolling DOWN and not at top
                 setIsVisible(false);
+                setIsMobileMenuOpen(false); // Close menu on scroll down
             }
 
             setLastScrollY(currentScrollY);
@@ -39,109 +41,145 @@ export const Navbar = () => {
         { name: "Home", href: "/", icon: Home },
         { name: "Download", href: "/download", icon: Download },
         { name: "Changelog", href: "/changelog", icon: FileText },
+        { name: "Discussions", href: "https://github.com/orgs/Colorwall/discussions", icon: MessageCircle },
     ];
 
     return (
         <motion.div
-            className="fixed left-4 top-1/2 -translate-y-1/2 z-50 flex flex-col gap-4"
-            initial={{ x: -100, opacity: 0 }}
+            className={`fixed top-4 z-[100] transition-all duration-300 ${isMobileMenuOpen ? 'w-[calc(100%-2rem)] max-w-7xl left-1/2 -translate-x-1/2' : 'right-4 md:left-1/2 md:w-[calc(100%-2rem)] md:max-w-7xl md:-translate-x-1/2 md:right-auto'}`}
+            initial={{ y: -100, opacity: 0 }}
             animate={{
-                x: isVisible || isHovered ? 0 : -100,
+                y: isVisible || isHovered ? 0 : -100,
                 opacity: isVisible || isHovered ? 1 : 0
             }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
         >
-            {/* The Vertical "Dock" */}
-            <div className={`p-2 rounded-2xl border backdrop-blur-xl shadow-2xl flex flex-col gap-2
+            <div className={`transition-all duration-300 backdrop-blur-xl shadow-[0_4px_30px_rgba(0,0,0,0.1)] border
+                ${isMobileMenuOpen ? "px-4 py-4 rounded-2xl w-full" : "px-2 py-2 sm:px-6 md:py-0 md:h-16 rounded-full md:rounded-2xl w-auto md:w-full"} 
                 ${isDark
-                    ? "bg-[#0a0a0a]/80 border-white/10"
-                    : "bg-white/80 border-black/10"}`}
+                    ? "bg-[#161618]/90 border-white/10 shadow-black/50"
+                    : "bg-white/90 border-black/10"}`}
             >
-                {/* Logo / Home Button */}
-                <Link
-                    href="/"
-                    className={`p-2 rounded-xl transition-all duration-300 group relative
-                        ${pathname === "/"
-                            ? (isDark ? "bg-white/10 text-white" : "bg-black/5 text-black")
-                            : (isDark ? "text-white/40 hover:text-white hover:bg-white/5" : "text-black/40 hover:text-black hover:bg-black/5")}`}
-                >
-                    <div className="relative w-6 h-6">
-                        <img src="/colorwall.png" alt="Logo" className="object-contain w-full h-full" />
-                    </div>
-                    {/* Tooltip */}
-                    <span className={`absolute left-14 top-1/2 -translate-y-1/2 px-2 py-1 rounded-md text-xs font-bold whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none
-                        ${isDark ? "bg-white text-black" : "bg-black text-white"}`}>
-                        Home
-                    </span>
-                </Link>
+                <div className={`flex items-center h-[48px] sm:h-auto md:h-full ${isMobileMenuOpen ? 'justify-between w-full' : 'justify-center md:justify-between w-auto md:w-full'}`}>
 
-                <div className={`h-[1px] w-full ${isDark ? "bg-white/10" : "bg-black/10"}`} />
-
-                {/* Nav Links */}
-                {navLinks.slice(1).map((link) => {
-                    const isActive = pathname === link.href;
-                    return (
+                    {/* Left: Logo / Brand (Hidden on Mobile when Closed) */}
+                    <div className={`flex-1 flex justify-start ${isMobileMenuOpen ? 'flex' : 'hidden md:flex'}`}>
                         <Link
-                            key={link.name}
-                            href={link.href}
-                            className={`p-2.5 rounded-xl transition-all duration-300 group relative
-                                ${isActive
-                                    ? (isDark ? "bg-white/10 text-white" : "bg-black/5 text-black")
-                                    : (isDark ? "text-white/40 hover:text-white hover:bg-white/5" : "text-black/40 hover:text-black hover:bg-black/5")}`}
+                            href="/"
+                            onClick={() => setIsMobileMenuOpen(false)}
+                            className="flex items-center transition-opacity hover:opacity-80"
                         >
-                            <link.icon size={20} />
-                            <span className={`absolute left-14 top-1/2 -translate-y-1/2 px-2 py-1 rounded-md text-xs font-bold whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none
-                                ${isDark ? "bg-white text-black" : "bg-black text-white"}`}>
-                                {link.name}
-                            </span>
+                            <img src="/colorwall.png" alt="ColorWall Logo" className="object-contain h-8 sm:h-10" />
                         </Link>
-                    );
-                })}
+                    </div>
 
-                <div className={`h-[1px] w-full ${isDark ? "bg-white/10" : "bg-black/10"}`} />
+                    {/* Desktop: Center Nav Links */}
+                    <nav className="hidden md:flex shrink-0 items-center gap-2 sm:gap-4">
+                        {navLinks.map((link) => {
+                            const isActive = pathname === link.href;
+                            const isExternal = link.href.startsWith("http");
+                            return (
+                                <Link
+                                    key={link.name}
+                                    href={link.href}
+                                    target={isExternal ? "_blank" : undefined}
+                                    rel={isExternal ? "noopener noreferrer" : undefined}
+                                    className={`px-3 py-2 sm:px-4 rounded-xl transition-all duration-300 flex items-center gap-2 group
+                                        ${isActive
+                                            ? (isDark ? "bg-white/10 text-white shadow-sm" : "bg-black/5 text-black")
+                                            : (isDark ? "text-white/85 hover:text-white hover:bg-white/10" : "text-black/70 hover:text-black hover:bg-black/5")}`}
+                                >
+                                    <link.icon size={18} className="transition-opacity group-hover:opacity-100" />
+                                    <span className="text-sm font-medium transition-opacity group-hover:opacity-100">
+                                        {link.name}
+                                    </span>
+                                </Link>
+                            );
+                        })}
+                    </nav>
 
-                {/* Socials & Settings */}
-                <a
-                    href="https://github.com/shelleyloosespatience/WallpaperEngine"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={`p-2.5 rounded-xl transition-all duration-300 group relative
-                        ${isDark ? "text-white/40 hover:text-white hover:bg-white/5" : "text-black/40 hover:text-black hover:bg-black/5"}`}
-                >
-                    <Github size={20} />
-                    <span className={`absolute left-14 top-1/2 -translate-y-1/2 px-2 py-1 rounded-md text-xs font-bold whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none
-                        ${isDark ? "bg-white text-black" : "bg-black text-white"}`}>
-                        GitHub
-                    </span>
-                </a>
+                    {/* Desktop: Right Socials & Settings */}
+                    <div className="hidden md:flex flex-1 justify-end items-center gap-1 sm:gap-2">
+                        <a href="https://github.com/colorwall/colorwall" target="_blank" rel="noopener noreferrer" className={`p-2 rounded-xl transition-all duration-300 flex items-center justify-center ${isDark ? "text-white/85 hover:text-white hover:bg-white/10" : "text-black/70 hover:text-black hover:bg-black/5"}`} title="GitHub">
+                            <i className="fa-brands fa-github text-[20px]"></i>
+                        </a>
+                        <a href="https://discord.gg/cHVwPkBC7p" target="_blank" rel="noopener noreferrer" className={`p-2 rounded-xl transition-all duration-300 flex items-center justify-center ${isDark ? "text-white/85 hover:text-[#5865F2] hover:bg-[#5865F2]/10" : "text-black/70 hover:text-[#5865F2] hover:bg-[#5865F2]/10"}`} title="Discord">
+                            <i className="fa-brands fa-discord text-[20px]"></i>
+                        </a>
+                        <a href="https://x.com/colorwall_xyz" target="_blank" rel="noopener noreferrer" className={`p-2 rounded-xl transition-all duration-300 flex items-center justify-center ${isDark ? "text-white/85 hover:text-white hover:bg-white/10" : "text-black/70 hover:text-black hover:bg-black/5"}`} title="X">
+                            <i className="fa-brands fa-x-twitter text-[20px]"></i>
+                        </a>
+                        <div className={`w-[1px] h-6 mx-2 ${isDark ? "bg-white/10" : "bg-black/10"}`} />
+                        <button onClick={toggleTheme} className={`p-2 rounded-xl transition-all duration-300 ${isDark ? "text-yellow-400 hover:bg-yellow-400/10" : "text-slate-600 hover:bg-slate-200"}`} title="Toggle Theme">
+                            {isDark ? <Sun size={20} /> : <Moon size={20} />}
+                        </button>
+                    </div>
 
-                <a
-                    href="https://discord.gg/QYwhay7r2V"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={`p-2.5 rounded-xl transition-all duration-300 group relative
-                        ${isDark ? "text-white/40 hover:text-[#5865F2] hover:bg-[#5865F2]/10" : "text-black/40 hover:text-[#5865F2] hover:bg-[#5865F2]/10"}`}
-                >
-                    <MessageCircle size={20} />
-                    <span className={`absolute left-14 top-1/2 -translate-y-1/2 px-2 py-1 rounded-md text-xs font-bold whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none
-                        ${isDark ? "bg-white text-black" : "bg-black text-white"}`}>
-                        Discord
-                    </span>
-                </a>
+                    {/* Mobile: Pill Controls (Theme Toggle & Menu) */}
+                    <div className={`md:hidden flex items-center gap-1 ${isMobileMenuOpen ? 'flex-1 justify-end' : ''}`}>
+                        <button
+                            onClick={toggleTheme}
+                            className={`p-2.5 rounded-full transition-all duration-300 ${isDark ? "text-yellow-400 hover:bg-yellow-400/10" : "text-slate-600 hover:bg-slate-200"}`}
+                        >
+                            {isDark ? <Sun size={20} /> : <Moon size={20} />}
+                        </button>
+                        <button
+                            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                            className={`p-2.5 rounded-full transition-all duration-300 ${isDark ? "text-white bg-white/10 hover:bg-white/20" : "text-black bg-black/5 hover:bg-black/10"}`}
+                        >
+                            {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+                        </button>
+                    </div>
+                </div>
 
-                <button
-                    onClick={toggleTheme}
-                    className={`p-2.5 rounded-xl transition-all duration-300 group relative
-                        ${isDark ? "text-yellow-400 hover:bg-yellow-400/10" : "text-slate-600 hover:bg-slate-100"}`}
-                >
-                    {isDark ? <Sun size={20} /> : <Moon size={20} />}
-                    <span className={`absolute left-14 top-1/2 -translate-y-1/2 px-2 py-1 rounded-md text-xs font-bold whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none
-                        ${isDark ? "bg-white text-black" : "bg-black text-white"}`}>
-                        Toggle Theme
-                    </span>
-                </button>
+                {/* Mobile Dropdown Menu Expanded Content */}
+                <AnimatePresence>
+                    {isMobileMenuOpen && (
+                        <motion.div
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: "auto", opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            className="md:hidden overflow-hidden flex flex-col pt-4 gap-2 border-t mt-2"
+                            style={{ borderColor: isDark ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.1)" }}
+                        >
+                            {navLinks.map((link) => {
+                                const isActive = pathname === link.href;
+                                const isExternal = link.href.startsWith("http");
+                                return (
+                                    <Link
+                                        key={link.name}
+                                        href={link.href}
+                                        target={isExternal ? "_blank" : undefined}
+                                        rel={isExternal ? "noopener noreferrer" : undefined}
+                                        onClick={() => setIsMobileMenuOpen(false)}
+                                        className={`px-4 py-3 rounded-xl transition-all duration-300 flex items-center gap-3
+                                            ${isActive
+                                                ? (isDark ? "bg-white/10 text-white" : "bg-black/5 text-black")
+                                                : (isDark ? "text-white/85 hover:text-white hover:bg-white/10" : "text-black/70 hover:text-black hover:bg-black/5")}`}
+                                    >
+                                        <link.icon size={20} />
+                                        <span className="font-medium text-base">{link.name}</span>
+                                    </Link>
+                                );
+                            })}
+
+                            {/* Socials on Mobile */}
+                            <div className="flex items-center gap-4 px-4 py-3">
+                                <a href="https://github.com/colorwall/colorwall" target="_blank" rel="noopener noreferrer" className={`text-2xl ${isDark ? "text-white/85 hover:text-white" : "text-black/70 hover:text-black"}`}>
+                                    <i className="fa-brands fa-github"></i>
+                                </a>
+                                <a href="https://discord.gg/cHVwPkBC7p" target="_blank" rel="noopener noreferrer" className={`text-2xl ${isDark ? "text-white/85 hover:text-[#5865F2]" : "text-black/70 hover:text-[#5865F2]"}`}>
+                                    <i className="fa-brands fa-discord"></i>
+                                </a>
+                                <a href="https://x.com/colorwall_xyz" target="_blank" rel="noopener noreferrer" className={`text-2xl ${isDark ? "text-white/85 hover:text-white" : "text-black/70 hover:text-black"}`}>
+                                    <i className="fa-brands fa-x-twitter"></i>
+                                </a>
+                            </div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
             </div>
         </motion.div>
     );

@@ -7,6 +7,9 @@ import { FeaturesSection } from "@/app/components/landing/FeaturesSection";
 import { ShowcaseCard } from "@/app/components/landing/ShowcaseCard";
 import { HomeShowcase } from "@/app/components/landing/HomeShowcase";
 import { ComparisonTable } from "@/app/components/landing/ComparisonTable";
+import { PlannedOpenSource } from "@/app/components/landing/PlannedOpenSource";
+import { CommunityReviews } from "@/app/components/landing/CommunityReviews";
+import { FAQSection } from "@/app/components/landing/FAQSection";
 import { BottomCTA } from "@/app/components/landing/BottomCTA";
 import { Footer } from "@/app/components/Footer";
 
@@ -57,6 +60,12 @@ export default function ColorWallLanding() {
             <HomeShowcase theme={theme} />
 
             <ComparisonTable theme={theme} />
+
+            <CommunityReviews theme={theme} />
+
+            <PlannedOpenSource theme={theme} />
+
+            <FAQSection theme={theme} />
 
             <BottomCTA theme={theme} />
 
