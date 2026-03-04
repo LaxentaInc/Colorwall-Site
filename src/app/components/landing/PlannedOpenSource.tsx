@@ -102,7 +102,7 @@ export const PlannedOpenSource = ({ theme }: { theme: "dark" | "light" }) => {
                         </div>
                         <div className="flex items-center gap-1.5">
                             <Lock size={12} />
-                            Closed Source
+                            soon to be open source
                         </div>
                     </div>
                 </motion.div>
@@ -131,7 +131,7 @@ export const PlannedOpenSource = ({ theme }: { theme: "dark" | "light" }) => {
 
                     <div>
                         <a
-                            href="https://ko-fi.com/" // The user didn't mention details, keeping base link
+                            href="https://ko-fi.com/laxenta"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="inline-flex items-center gap-2.5 px-6 py-3 rounded-xl font-bold text-white bg-gradient-to-r from-[#00A4FF] to-[#007AC2] hover:shadow-[0_0_20px_rgba(0,164,255,0.4)] transition-all duration-300 hover:-translate-y-0.5"
