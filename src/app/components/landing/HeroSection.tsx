@@ -35,26 +35,26 @@ export const HeroSection = ({ theme }: { theme?: "dark" | "light" }) => {
                 <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-white/30" />
             </div>
 
-            <div className="relative z-10 text-center flex flex-col items-center space-y-8 max-w-5xl">
+            <div className="relative z-10 text-center flex flex-col items-center space-y-6 sm:space-y-8 md:space-y-10 max-w-4xl xl:max-w-5xl">
                 {/* logo */}
                 <div className="relative w-full flex justify-center items-center">
                     <Image
                         src="/LxColorWall.png"
                         alt="ColorWall"
-                        width={800}
-                        height={300}
-                        className="w-[280px] sm:w-[400px] md:w-[600px] lg:w-[750px] h-auto object-contain drop-shadow-2xl"
+                        width={512}
+                        height={192}
+                        className="w-64 sm:w-80 md:w-96 lg:w-[448px] xl:w-[512px] h-auto object-contain drop-shadow-2xl"
                         priority
                         fetchPriority="high"
                     />
                 </div>
 
-                <h2 className="text-sm sm:text-base font-mono font-semibold tracking-widest uppercase opacity-90 mb-1 text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+                <h2 className="text-xs sm:text-sm md:text-base font-mono font-semibold tracking-widest uppercase opacity-90 mb-1 text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
                     Live Wallpaper <span className="text-blue-500">&</span> Desktop Customization Engine
                 </h2>
 
                 {/* typewriter */}
-                <div className="text-sm sm:text-lg md:text-xl font-mono text-white/90 font-medium drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]">
+                <div className="text-xs sm:text-sm md:text-base lg:text-lg font-mono text-white/90 font-medium drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]">
                     <Typewriter
                         words={[
                             "< A community-driven alternative to Wallpaper Engine />",
@@ -73,15 +73,15 @@ export const HeroSection = ({ theme }: { theme?: "dark" | "light" }) => {
                 </div>
 
                 {/* CTA row */}
-                <div className="flex flex-wrap items-center justify-center gap-4 pt-4">
+                <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 pt-2 sm:pt-4">
                     {/* download */}
                     <Link
                         href="/download"
-                        className="group inline-flex items-center gap-3 px-7 py-3.5 rounded-xl font-bold text-sm tracking-wide transition-all duration-300 hover:-translate-y-0.5 bg-white text-black hover:shadow-[0_8px_30px_rgba(255,255,255,0.15)]"
+                        className="group inline-flex items-center gap-2 sm:gap-3 px-6 py-3 sm:px-8 sm:py-4 rounded-xl font-bold text-xs sm:text-sm tracking-wide transition-all duration-300 hover:-translate-y-0.5 bg-white text-black hover:shadow-[0_8px_30px_rgba(255,255,255,0.15)]"
                     >
-                        <Download size={18} />
+                        <Download className="w-4 h-4 sm:w-5 sm:h-5" />
                         Download Now
-                        <span className="text-xs px-2 py-0.5 rounded-md ml-1 bg-black/10 text-black/60">
+                        <span className="text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 rounded-md ml-0.5 sm:ml-1 bg-black/10 text-black/60">
                             Win 10/11
                         </span>
                     </Link>
@@ -89,9 +89,9 @@ export const HeroSection = ({ theme }: { theme?: "dark" | "light" }) => {
                     {/* changelog */}
                     <Link
                         href="/changelog"
-                        className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl font-semibold text-sm tracking-wide transition-all duration-300 hover:-translate-y-0.5 border border-white/20 text-white bg-black/30 backdrop-blur-md hover:border-white/40 hover:bg-black/50"
+                        className="inline-flex items-center gap-1.5 sm:gap-2 px-5 py-3 sm:px-7 sm:py-4 rounded-xl font-semibold text-xs sm:text-sm tracking-wide transition-all duration-300 hover:-translate-y-0.5 border border-white/20 text-white bg-black/30 backdrop-blur-md hover:border-white/40 hover:bg-black/50"
                     >
-                        <FileText size={16} />
+                        <FileText className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                         Changelog
                     </Link>
 
@@ -100,20 +100,20 @@ export const HeroSection = ({ theme }: { theme?: "dark" | "light" }) => {
                         href="https://discord.gg/cHVwPkBC7p"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl font-semibold text-sm tracking-wide transition-all duration-300 hover:-translate-y-0.5 border border-white/20 text-white bg-black/30 backdrop-blur-md hover:border-indigo-400/50 hover:bg-indigo-500/20 hover:text-indigo-300"
+                        className="inline-flex items-center gap-1.5 sm:gap-2 px-5 py-3 sm:px-7 sm:py-4 rounded-xl font-semibold text-xs sm:text-sm tracking-wide transition-all duration-300 hover:-translate-y-0.5 border border-white/20 text-white bg-black/30 backdrop-blur-md hover:border-indigo-400/50 hover:bg-indigo-500/20 hover:text-indigo-300"
                     >
-                        <i className="fa-brands fa-discord text-base"></i>
+                        <i className="fa-brands fa-discord text-sm sm:text-base"></i>
                         Discord
                     </a>
                 </div>
 
                 {/* platform tags */}
-                <div className="flex items-center gap-3 text-xs font-mono pt-2 text-white font-bold drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
-                    <span className="flex items-center gap-1.5"><Cpu size={12} /> Rust + Tauri</span>
-                    <span>·</span>
-                    <span className="flex items-center gap-1.5"><Monitor size={12} /> Windows 10/11</span>
-                    <span>·</span>
-                    <span className="flex items-center gap-1.5"><Github size={12} /> AGPL-3</span>
+                <div className="flex flex-wrap justify-center items-center gap-2 sm:gap-3 text-[10px] sm:text-xs font-mono pt-2 text-white font-bold drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+                    <span className="flex items-center gap-1 sm:gap-1.5"><Cpu className="w-3 h-3 sm:w-3.5 sm:h-3.5" /> Rust + Tauri</span>
+                    <span className="opacity-50">·</span>
+                    <span className="flex items-center gap-1 sm:gap-1.5"><Monitor className="w-3 h-3 sm:w-3.5 sm:h-3.5" /> Windows 10/11</span>
+                    <span className="opacity-50">·</span>
+                    <span className="flex items-center gap-1 sm:gap-1.5"><Github className="w-3 h-3 sm:w-3.5 sm:h-3.5" /> AGPL-3</span>
                 </div>
             </div>
 
