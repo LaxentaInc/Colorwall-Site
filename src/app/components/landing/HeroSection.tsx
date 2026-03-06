@@ -31,8 +31,7 @@ export const HeroSection = ({ theme }: { theme?: "dark" | "light" }) => {
                     <source src="/videos/myCutekoiiii.webm" type="video/webm" />
                 </video>
 
-                {/* gradient overlay */}
-                <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-white/30" />
+                {/* Removed fallback gradient fade at edges as requested */}
             </div>
 
             <div className="relative z-10 text-center flex flex-col items-center space-y-6 sm:space-y-8 md:space-y-10 max-w-4xl xl:max-w-5xl">
