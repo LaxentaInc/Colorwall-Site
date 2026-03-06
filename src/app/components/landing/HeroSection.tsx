@@ -89,7 +89,7 @@ export const HeroSection = ({ theme }: { theme?: "dark" | "light" }) => {
                     {/* changelog */}
                     <Link
                         href="/changelog"
-                        className="inline-flex items-center gap-1.5 sm:gap-2 px-5 py-3 sm:px-7 sm:py-4 rounded-xl font-semibold text-xs sm:text-sm tracking-wide transition-all duration-300 hover:-translate-y-0.5 border border-white/20 text-white bg-black/30 backdrop-blur-md hover:border-white/40 hover:bg-black/50"
+                        className="inline-flex items-center gap-1.5 sm:gap-2 px-5 py-3 sm:px-7 sm:py-4 rounded-xl font-semibold text-xs sm:text-sm tracking-wide transition-all duration-300 hover:-translate-y-0.5 border border-white/20 text-white bg-black/30 hover:border-white/40 hover:bg-black/50"
                     >
                         <FileText className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                         Changelog
@@ -100,7 +100,7 @@ export const HeroSection = ({ theme }: { theme?: "dark" | "light" }) => {
                         href="https://discord.gg/cHVwPkBC7p"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1.5 sm:gap-2 px-5 py-3 sm:px-7 sm:py-4 rounded-xl font-semibold text-xs sm:text-sm tracking-wide transition-all duration-300 hover:-translate-y-0.5 border border-white/20 text-white bg-black/30 backdrop-blur-md hover:border-indigo-400/50 hover:bg-indigo-500/20 hover:text-indigo-300"
+                        className="inline-flex items-center gap-1.5 sm:gap-2 px-5 py-3 sm:px-7 sm:py-4 rounded-xl font-semibold text-xs sm:text-sm tracking-wide transition-all duration-300 hover:-translate-y-0.5 border border-white/20 text-white bg-black/30 hover:border-indigo-400/50 hover:bg-indigo-500/20 hover:text-indigo-300"
                     >
                         <i className="fa-brands fa-discord text-sm sm:text-base"></i>
                         Discord
@@ -121,3 +121,4 @@ export const HeroSection = ({ theme }: { theme?: "dark" | "light" }) => {
         </motion.section>
     );
 };
+
