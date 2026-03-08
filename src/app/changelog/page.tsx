@@ -7,6 +7,7 @@ import { useTheme } from "@/app/contexts/ThemeContext";
 import { useEffect, useState } from "react";
 
 interface ReleaseAsset {
+    id: number;
     name: string;
     download_count: number;
     browser_download_url: string;
@@ -42,8 +43,26 @@ export default function ChangelogPage() {
             try {
                 const res = await fetch("https://api.github.com/repos/colorwall/colorwall/releases");
                 if (res.ok) {
-                    const data = await res.json();
-                    setReleases(data);
+                    const data: Release[] = await res.json();
+
+                    // Sort releases using semantic versioning logic
+                    const sortedReleases = data.sort((a, b) => {
+                        // Extract version numbers, removing 'v' prefixes
+                        const versionA = a.tag_name.replace(/^v/, '').split('.').map(Number);
+                        const versionB = b.tag_name.replace(/^v/, '').split('.').map(Number);
+
+                        for (let i = 0; i < Math.max(versionA.length, versionB.length); i++) {
+                            const partA = versionA[i] || 0;
+                            const partB = versionB[i] || 0;
+                            if (partA > partB) return -1;
+                            if (partA < partB) return 1;
+                        }
+
+                        // Fallback to published_at if versions are identical
+                        return new Date(b.published_at).getTime() - new Date(a.published_at).getTime();
+                    });
+
+                    setReleases(sortedReleases);
                 }
             } catch (error) {
                 console.error("Failed to fetch releases:", error);

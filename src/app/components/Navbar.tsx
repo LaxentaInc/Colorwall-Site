@@ -90,7 +90,7 @@ export const Navbar = () => {
             >        <div className="flex items-center h-14 px-4 gap-2">
                     <Link href="/" className="group flex items-center mr-1 opacity-90 hover:opacity-100 transition-opacity shrink-0 relative">
                         <img src="/colorwall.png" alt="ColorWall" className="h-7 object-contain" />
-                        <span className={`absolute left-[76px] top-1/2 -translate-y-1/2 px-4 py-2 rounded-xl text-xs font-mono font-bold tracking-widest uppercase whitespace-nowrap opacity-0 group-hover:opacity-100 shadow-xl transition-all pointer-events-none
+                        <span className={`absolute left-[76px] top-1/2 -translate-y-1/2 px-4 py-2 rounded-xl text-xs font-mono font-bold tracking-widest uppercase whitespace-nowrap opacity-0 group-hover:opacity-100 shadow-xl transition-all pointer-events-none drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]
               ${isDark ? "bg-[#0a0a0a]/90 border border-white/10 text-white" : "bg-white/90 border border-black/10 text-black"}`}>
                             ColorWall
                         </span>
@@ -106,7 +106,7 @@ export const Navbar = () => {
                                     href={link.href}
                                     target={isExternal ? "_blank" : undefined}
                                     rel={isExternal ? "noopener noreferrer" : undefined}
-                                    className={`px-3 py-2 rounded-xl text-[11px] sm:text-xs font-mono font-semibold tracking-widest uppercase transition-all duration-200 flex items-center gap-2
+                                    className={`px-3 py-2 rounded-xl text-[11px] sm:text-xs font-mono font-semibold tracking-widest uppercase transition-all duration-200 flex items-center gap-2 drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]
                     ${isActive
                                             ? isDark ? "bg-white/10 text-white" : "bg-black/6 text-black"
                                             : isDark ? "text-white/55 hover:text-white hover:bg-white/7" : "text-black/50 hover:text-black hover:bg-black/4"
@@ -172,7 +172,7 @@ export const Navbar = () => {
                                             target={isExternal ? "_blank" : undefined}
                                             rel={isExternal ? "noopener noreferrer" : undefined}
                                             onClick={() => setIsMobileMenuOpen(false)}
-                                            className={`px-3 py-2 rounded-xl text-[11px] sm:text-xs font-mono font-semibold tracking-widest uppercase transition-all duration-200 flex items-center gap-2.5
+                                            className={`px-3 py-2 rounded-xl text-[11px] sm:text-xs font-mono font-semibold tracking-widest uppercase transition-all duration-200 flex items-center gap-2.5 drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]
                         ${isActive
                                                     ? isDark ? "bg-white/10 text-white" : "bg-black/6 text-black"
                                                     : isDark ? "text-white/55 hover:text-white hover:bg-white/7" : "text-black/50 hover:text-black hover:bg-black/4"
