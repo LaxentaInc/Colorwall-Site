@@ -96,7 +96,7 @@ export const Navbar = () => {
                         </span>
                     </Link>
 
-                    <nav className="hidden md:flex items-center gap-0.5 flex-1">
+                    <nav className="hidden md:flex items-center justify-center gap-0.5 flex-1">
                         {navLinks.map((link) => {
                             const isActive = pathname === link.href;
                             const isExternal = link.href.startsWith("http");
