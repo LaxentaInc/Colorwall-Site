@@ -46,6 +46,28 @@ const nextConfig: NextConfig = {
             value: 'Content-Type'
           }
         ],
+      },
+      // cors + security headers for the tauri auto-update api
+      {
+        source: '/api/updates/:path*',
+        headers: [
+          {
+            key: 'Access-Control-Allow-Origin',
+            value: '*'
+          },
+          {
+            key: 'Access-Control-Allow-Methods',
+            value: 'GET, OPTIONS'
+          },
+          {
+            key: 'Access-Control-Allow-Headers',
+            value: 'Content-Type'
+          },
+          {
+            key: 'X-Content-Type-Options',
+            value: 'nosniff'
+          }
+        ],
       }
     ];
   },
