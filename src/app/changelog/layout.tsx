@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
     title: 'Changelog',
-    description: 'View the latest updates, features, and bug fixes for the ColorWall live wallpaper engine.',
+    description: 'View the latest updates, features, and improvements for ColorWall.',
 };
 
 export default function ChangelogLayout({

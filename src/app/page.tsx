@@ -30,8 +30,8 @@ export default function ColorWallLanding() {
 
             <ShowcaseCard
                 title="STORE"
-                description="Access thousands of wallpapers from 8+ sources. One unified search bar, infinite inspiration — all free."
-                badge="8 SOURCES · 4K · FREE"
+                description="Access thousands of wallpapers from 8+ sources. One unified search bar, infinite inspiration — no account needed."
+                badge="8 SOURCES · 4K · UNIFIED"
                 imageSrc="/Store.PNG"
                 index={0}
                 theme={theme}

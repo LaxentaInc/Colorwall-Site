@@ -56,11 +56,11 @@ export const HeroSection = ({ theme }: { theme?: "dark" | "light" }) => {
                 <div className="text-xs sm:text-sm md:text-base lg:text-lg font-mono text-white/90 font-medium drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]">
                     <Typewriter
                         words={[
-                            "< A community-driven alternative to Wallpaper Engine />",
-                            "< Made in Rust + Tauri · ~5MB app />",
-                            "< Insane performance · Lower GPU usage · Hardware decoded />",
-                            "< Multiple wallpaper sources · One unified store · Free forever />",
-                            "< Tired of paying for animated wallpapers? Same. />",
+                            "< The desktop customization engine you deserved />",
+                            "< Built in Rust + Tauri · ~5MB · Near-zero overhead />",
+                            "< 4K 60fps · Hardware decoded · Lower GPU than alternatives />",
+                            "< 8 wallpaper sources · One unified store · No account needed />",
+                            "< Your desktop should feel alive. Now it can. />",
                         ]}
                         loop={0}
                         cursor

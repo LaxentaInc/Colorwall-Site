@@ -11,8 +11,8 @@ export const FAQSection = ({ theme }: { theme: "dark" | "light" }) => {
 
     const faqs = [
         {
-            question: "Is ColorWall completely free?",
-            answer: "The website version of ColorWall remains completely free. However, future releases on platforms like the Microsoft Store, Epic Games Store, and Steam will be paid versions to help support the project's development."
+            question: "What does ColorWall cost?",
+            answer: "ColorWall is available at no cost from our website. Future releases on the Microsoft Store, Epic Games, and Steam will be premium editions to help fund long-term development and signing certificates."
         },
         {
             question: "Does it affect gaming performance?",

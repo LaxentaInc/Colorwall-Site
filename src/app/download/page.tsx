@@ -109,7 +109,7 @@ export default function DownloadPage() {
                                 Download Colorwall
                             </h1>
                             <p className={`text-lg ${mutedText} max-w-xl mx-auto`}>
-                                A Lightweight Wallpaper Engine in Rust
+                                Desktop Customization, Engineered in Rust
                             </p>
                         </div>
                     </motion.div>

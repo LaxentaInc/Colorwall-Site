@@ -27,13 +27,13 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://laxenta.xyz";
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "ColorWall - Free Live Wallpaper Engine",
+    default: "ColorWall - Desktop Customization Engine",
     template: "%s | ColorWall"
   },
-  description: "ColorWall is a free, blazing fast live wallpaper engine built with Rust for Windows 10/11. Enhance your desktop customization with 4K wallpapers and minimal resource usage.",
+  description: "ColorWall is a blazing-fast desktop customization engine built in Rust for Windows 10/11. 4K live wallpapers, taskbar effects, and near-zero resource usage.",
   keywords: [
-    "wallpaper engine",
-    "free wallpaper engine",
+    "wallpaper engine alternative",
+    "desktop customization engine",
     "live wallpapers",
     "4k live wallpapers",
     "windows desktop customization",
@@ -62,8 +62,8 @@ export const metadata: Metadata = {
     locale: 'en_US',
     url: SITE_URL,
     siteName: 'ColorWall',
-    title: 'ColorWall - Free Live Wallpaper Engine',
-    description: 'ColorWall is a free, blazing fast live wallpaper engine built with Rust for Windows 10/11. Customize your desktop without slowing down your PC.',
+    title: 'ColorWall — Desktop Customization Engine',
+    description: 'A blazing-fast desktop customization engine built in Rust. 4K live wallpapers, taskbar effects, and near-zero resource usage for Windows 10/11.',
     images: [
       {
         url: '/og-image.png',
@@ -78,8 +78,8 @@ export const metadata: Metadata = {
     card: 'summary',
     site: '@colorwall_xyz',
     creator: '@colorwall_xyz',
-    title: 'ColorWall - Free Live Wallpaper Engine',
-    description: 'A performance-focused, free live wallpaper engine for Windows. Customize your desktop without slowing down your PC.',
+    title: 'ColorWall — Desktop Customization Engine',
+    description: 'A performance-first desktop customization engine for Windows. 4K live wallpapers with near-zero overhead, built entirely in Rust.',
     images: ['/og-image.png'],
   },
   robots: {
