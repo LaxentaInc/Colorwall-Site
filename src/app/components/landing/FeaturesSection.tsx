@@ -28,7 +28,7 @@ const features = [
         id: "04",
         icon: Search,
         title: "8 Sources, One Store",
-        desc: "Third party store, we do not scrape anyone — unified search, zero effort.",
+        desc: "Third party store, we do not store data or wallpapers on our server — but we provide unified search.",
     },
     {
         id: "05",
