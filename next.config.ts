@@ -68,6 +68,24 @@ const nextConfig: NextConfig = {
             value: 'nosniff'
           }
         ],
+      },
+      // CORS for Feedback API submission from Tauri App
+      {
+        source: '/api/feedback/:path*',
+        headers: [
+          {
+            key: 'Access-Control-Allow-Origin',
+            value: '*'
+          },
+          {
+            key: 'Access-Control-Allow-Methods',
+            value: 'GET, POST, OPTIONS'
+          },
+          {
+            key: 'Access-Control-Allow-Headers',
+            value: 'Content-Type'
+          }
+        ],
       }
     ];
   },
