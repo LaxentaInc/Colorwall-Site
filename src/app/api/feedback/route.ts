@@ -94,6 +94,7 @@ export async function GET(req: Request) {
             text:      doc.text     ?? '',
             images:    doc.images   ?? [],
             logFiles:  doc.logFiles ?? (doc.logFile ? [{ name: 'log.txt', content: doc.logFile }] : []),
+            appVersion: doc.appVersion,
             source:    (doc.source === 'App' ? 'App' : 'Web') as 'App' | 'Web',
             createdAt: doc.createdAt,
         }));

@@ -240,7 +240,9 @@ function AppCard({ group, index, theme }: { group: FeedbackGroup; index: number;
                             <div className="flex items-center gap-1.5 mt-0.5">
                                 <span className={`text-[10px] font-mono ${isDark ? 'text-zinc-500' : 'text-zinc-500'}`}>{timeAgo(first.createdAt)}</span>
                                 <span className={`text-[10px] ${isDark ? 'text-zinc-700' : 'text-zinc-300'}`}>·</span>
-                                <span className={`text-[10px] font-mono ${isDark ? 'text-blue-500/50' : 'text-blue-600/60'}`}>Engine V1</span>
+                                <span className={`text-[10px] font-mono ${isDark ? 'text-blue-500/50' : 'text-blue-600/60'}`}>
+                                    {first.appVersion ? `Engine v${first.appVersion}` : 'Engine V1'}
+                                </span>
                             </div>
                         </div>
                     </div>
