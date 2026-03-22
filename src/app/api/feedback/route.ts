@@ -1,0 +1,187 @@
+import { NextResponse } from 'next/server';
+import { getDb } from '@/lib/mongodb';
+import crypto from 'crypto';
+
+// ─── Constants ────────────────────────────────────────────────────────────────
+
+const LIMITS = {
+    USERNAME_MAX:   64,
+    TEXT_MAX:       2000,
+    IMAGE_MAX_SIZE: 2 * 1024 * 1024,   // 2 MB
+    LOG_MAX_SIZE:   1 * 1024 * 1024,   // 1 MB
+    IMAGE_COUNT:    5,
+    RATE_WINDOW_MS: 30 * 60 * 1000,    // 30 min
+} as const;
+
+const ALLOWED_IMAGE_TYPES = new Set([
+    'image/jpeg',
+    'image/png',
+    'image/webp',
+    'image/gif',
+]);
+
+const ALLOWED_SOURCES = new Set(['App', 'Web']);
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+
+/** Strip null bytes and control characters that break MongoDB / display. */
+function sanitizeString(value: string): string {
+    return value
+        .replace(/\0/g, '')                       // null bytes
+        .replace(/[\x01-\x08\x0B\x0C\x0E-\x1F]/g, '') // ASCII control chars (keep \t \n \r)
+        .trim();
+}
+
+function err(message: string, status: number) {
+    return NextResponse.json({ success: false, error: message }, { status });
+}
+
+/** Hash the IP so we never store PII in the database. */
+function hashIp(req: Request): string {
+    const raw =
+        req.headers.get('x-forwarded-for')?.split(',')[0].trim() ||
+        req.headers.get('x-real-ip') ||
+        'unknown';
+    return crypto.createHash('sha256').update(raw).digest('hex');
+}
+
+/** Detect submission source with priority:
+ *  1. Explicit `source` field sent by the client (validated against allowlist)
+ *  2. Tauri user-agent detection (desktop app)
+ *  3. Default → Web
+ */
+function detectSource(formData: FormData, req: Request): 'App' | 'Web' {
+    const explicit = formData.get('source')?.toString().trim();
+    if (explicit && ALLOWED_SOURCES.has(explicit)) {
+        return explicit as 'App' | 'Web';
+    }
+    const ua = req.headers.get('user-agent') ?? '';
+    return ua.includes('Tauri') ? 'App' : 'Web';
+}
+
+// ─── Route ────────────────────────────────────────────────────────────────────
+
+export async function POST(req: Request) {
+    try {
+        // ── 1. Parse form data ───────────────────────────────────────────────
+        let formData: FormData;
+        try {
+            formData = await req.formData();
+        } catch {
+            return err('Invalid multipart/form-data payload.', 400);
+        }
+
+        // ── 2. Validate text fields ──────────────────────────────────────────
+        const rawUsername = formData.get('username')?.toString() ?? '';
+        const rawText     = formData.get('text')?.toString() ?? '';
+
+        const username = sanitizeString(rawUsername) || 'Anonymous';
+        const text     = sanitizeString(rawText);
+
+        if (username.length > LIMITS.USERNAME_MAX) {
+            return err(`Username must be ${LIMITS.USERNAME_MAX} characters or fewer.`, 400);
+        }
+
+        if (text.length > LIMITS.TEXT_MAX) {
+            return err(`Feedback text must be ${LIMITS.TEXT_MAX} characters or fewer.`, 400);
+        }
+
+        // ── 3. Parse & validate files ────────────────────────────────────────
+        const images: string[] = [];
+        let   logFileContent: string | null = null;
+        const imageEntries = formData.getAll('images'); // multi-file field
+
+        // Accept both `images` (array) and legacy `image0`…`imageN` keys
+        const allImageFiles = [
+            ...imageEntries,
+            ...[...formData.keys()]
+                .filter(k => /^image\d+$/.test(k))
+                .flatMap(k => formData.getAll(k)),
+        ].filter((v): v is File => v instanceof File);
+
+        for (const file of allImageFiles) {
+            if (images.length >= LIMITS.IMAGE_COUNT) break;
+
+            if (!ALLOWED_IMAGE_TYPES.has(file.type)) {
+                return err(
+                    `Unsupported image type "${file.type}". Allowed: JPEG, PNG, WebP, GIF.`,
+                    400,
+                );
+            }
+
+            if (file.size > LIMITS.IMAGE_MAX_SIZE) {
+                return err(`Each image must be under ${LIMITS.IMAGE_MAX_SIZE / 1024 / 1024} MB.`, 400);
+            }
+
+            if (file.size === 0) continue; // skip empty blobs silently
+
+            const buffer = await file.arrayBuffer();
+            const base64 = Buffer.from(buffer).toString('base64');
+            images.push(`data:${file.type};base64,${base64}`);
+        }
+
+        // Log file
+        const logFile = formData.get('logFile');
+        if (logFile instanceof File) {
+            if (logFile.size > LIMITS.LOG_MAX_SIZE) {
+                return err(`Log file must be under ${LIMITS.LOG_MAX_SIZE / 1024 / 1024} MB.`, 400);
+            }
+            if (logFile.size > 0) {
+                logFileContent = await logFile.text();
+            }
+        }
+
+        // ── 4. Require at least something meaningful ─────────────────────────
+        if (!text && images.length === 0 && !logFileContent) {
+            return err('Feedback must include text, at least one image, or a log file.', 400);
+        }
+
+        // ── 5. Optional metadata ─────────────────────────────────────────────
+        const appVersion = sanitizeString(
+            formData.get('appVersion')?.toString() ?? ''
+        ).slice(0, 32) || null;
+
+        const source = detectSource(formData, req);
+
+        // ── 6. Atomic rate-limit check ───────────────────────────────────────
+        //   findOneAndUpdate with upsert lets us check + create in a single
+        //   round-trip, eliminating the TOCTOU race condition of
+        //   findOne → insertOne.
+        //
+        //   The `rateLimits` collection should have a TTL index:
+        //   db.rateLimits.createIndex({ expiresAt: 1 }, { expireAfterSeconds: 0 })
+        const ipHash   = hashIp(req);
+        const db       = await getDb();
+        const now      = new Date();
+        const expiresAt = new Date(now.getTime() + LIMITS.RATE_WINDOW_MS);
+
+        const rl = await db.collection('rateLimits').findOneAndUpdate(
+            { ipHash, expiresAt: { $gt: now } },            // find an active window
+            { $setOnInsert: { ipHash, createdAt: now, expiresAt } },
+            { upsert: true, returnDocument: 'before' },     // "before" → null if inserted fresh
+        );
+
+        // If a document existed before our upsert, the IP is rate-limited
+        if (rl !== null) {
+            return err('You have already submitted feedback recently. Please wait 30 minutes.', 429);
+        }
+
+        // ── 7. Persist feedback ──────────────────────────────────────────────
+        const result = await db.collection('feedback').insertOne({
+            username,
+            text,
+            images,
+            logFile:    logFileContent,
+            appVersion,
+            ipHash,
+            source,
+            createdAt:  now,
+        });
+
+        return NextResponse.json({ success: true, id: result.insertedId }, { status: 201 });
+
+    } catch (error) {
+        console.error('[feedback/POST]', error);
+        return NextResponse.json({ success: false, error: 'Internal Server Error' }, { status: 500 });
+    }
+}
