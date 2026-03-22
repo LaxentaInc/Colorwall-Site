@@ -38,8 +38,9 @@ function err(message: string, status: number) {
 
 /** Hash the IP so we never store PII in the database. */
 function hashIp(req: Request): string {
+    const forwardedFor = req.headers.get('x-forwarded-for');
     const raw =
-        req.headers.get('x-forwarded-for')?.split(',')[0].trim() ||
+        (forwardedFor ? forwardedFor.split(',')[0].trim() : null) ||
         req.headers.get('x-real-ip') ||
         'unknown';
     return crypto.createHash('sha256').update(raw).digest('hex');
@@ -51,7 +52,8 @@ function hashIp(req: Request): string {
  *  3. Default → Web
  */
 function detectSource(formData: FormData, req: Request): 'App' | 'Web' {
-    const explicit = formData.get('source')?.toString().trim();
+    const sourceStr = formData.get('source');
+    const explicit = typeof sourceStr === 'string' ? sourceStr.trim() : null;
     if (explicit && ALLOWED_SOURCES.has(explicit)) {
         return explicit as 'App' | 'Web';
     }
@@ -94,7 +96,7 @@ export async function POST(req: Request) {
         // Accept both `images` (array) and legacy `image0`…`imageN` keys
         const allImageFiles = [
             ...imageEntries,
-            ...[...formData.keys()]
+            ...Array.from(formData.keys())
                 .filter(k => /^image\d+$/.test(k))
                 .flatMap(k => formData.getAll(k)),
         ].filter((v): v is File => v instanceof File);

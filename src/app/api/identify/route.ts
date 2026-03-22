@@ -5,8 +5,9 @@ import crypto from 'crypto';
 export const dynamic = 'force-dynamic';
 
 function hashIp(req: Request): string {
+    const forwardedFor = req.headers.get('x-forwarded-for');
     const raw =
-        req.headers.get('x-forwarded-for')?.split(',')[0].trim() ||
+        (forwardedFor ? forwardedFor.split(',')[0].trim() : null) ||
         req.headers.get('x-real-ip') ||
         'unknown';
     return crypto.createHash('sha256').update(raw).digest('hex');
