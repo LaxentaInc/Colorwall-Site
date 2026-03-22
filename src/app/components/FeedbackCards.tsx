@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Monitor, Globe, ChevronDown, ChevronUp } from 'lucide-react';
+import { Monitor, Globe, ChevronDown, ChevronUp, FileText } from 'lucide-react';
 import { useTheme } from '@/app/contexts/ThemeContext';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -11,6 +11,8 @@ export interface FeedbackItem {
     username:  string;
     text:      string;
     images:    string[];
+    logFiles?: { name: string, content: string }[];
+    appVersion?: string;
     source:    'App' | 'Web';
     createdAt: Date | string;
 }
@@ -123,6 +125,18 @@ function MessagesList({ items, isExpanded, theme }: { items: FeedbackItem[], isE
                             </p>
                         )}
                         {(isExpanded || i === 0) && <ExpandableImageGrid images={item.images} theme={theme} />}
+                        {item.logFiles && item.logFiles.map((log, idx) => (
+                            <div key={idx} className={`mt-3 rounded-lg border overflow-hidden ${isDark ? 'border-indigo-500/20' : 'border-indigo-200'}`}>
+                                <div className={`flex items-center gap-2 px-3 py-2 text-[10px] uppercase tracking-wider font-mono border-b ${isDark ? 'bg-indigo-500/10 border-indigo-500/20 text-indigo-400' : 'bg-indigo-50 border-indigo-200 text-indigo-600'}`}>
+                                    <FileText size={12} /> {log.name}
+                                </div>
+                                <div className={`p-3 text-[11px] font-mono overflow-x-auto whitespace-pre-wrap max-h-48 ${
+                                    isDark ? 'bg-black/40 text-indigo-100/70' : 'bg-white text-indigo-900/80'
+                                }`}>
+                                    {log.content}
+                                </div>
+                            </div>
+                        ))}
                     </div>
                 );
             })}
@@ -139,7 +153,7 @@ function WebCard({ group, index, theme }: { group: FeedbackGroup; index: number;
     const initials = group.username.slice(0, 2).toUpperCase();
     const first    = group.items[0];
 
-    const needsExpansion = group.items.length > 1 || (first.text && first.text.length > 250);
+    const needsExpansion = group.items.length > 1 || (first.text && first.text.length > 250) || (first.logFiles && first.logFiles.length > 0);
 
     return (
         <div className={`group relative rounded-xl border backdrop-blur-xl overflow-hidden transition-all duration-300 ${
@@ -201,7 +215,7 @@ function AppCard({ group, index, theme }: { group: FeedbackGroup; index: number;
     const isDark = theme === 'dark';
     const first = group.items[0];
 
-    const needsExpansion = group.items.length > 1 || (first.text && first.text.length > 250);
+    const needsExpansion = group.items.length > 1 || (first.text && first.text.length > 250) || (first.logFiles && first.logFiles.length > 0);
 
     return (
         <div className={`group relative rounded-xl border backdrop-blur-xl overflow-hidden transition-all duration-300 ${
@@ -249,6 +263,18 @@ function AppCard({ group, index, theme }: { group: FeedbackGroup; index: number;
                                     </p>
                                 )}
                                 {(isExpanded || i === 0) && <ExpandableImageGrid images={item.images} theme={theme} />}
+                                {item.logFiles && item.logFiles.map((log, idx) => (
+                                    <div key={idx} className={`mt-3 rounded-lg border overflow-hidden ${isDark ? 'border-white/10' : 'border-slate-200'}`}>
+                                        <div className={`flex items-center gap-2 px-3 py-2 text-[10px] uppercase tracking-wider font-mono border-b ${isDark ? 'bg-white/5 border-white/10 text-zinc-400' : 'bg-slate-100 border-slate-200 text-zinc-500'}`}>
+                                            <FileText size={12} /> {log.name}
+                                        </div>
+                                        <div className={`p-3 text-[11px] font-mono overflow-x-auto whitespace-pre-wrap max-h-48 ${
+                                            isDark ? 'bg-black/30 text-zinc-300' : 'bg-white text-zinc-700'
+                                        }`}>
+                                            {log.content}
+                                        </div>
+                                    </div>
+                                ))}
                             </div>
                         );
                     })}

@@ -93,6 +93,7 @@ export async function GET(req: Request) {
             username:  doc.username ?? 'Anonymous',
             text:      doc.text     ?? '',
             images:    doc.images   ?? [],
+            logFiles:  doc.logFiles ?? (doc.logFile ? [{ name: 'log.txt', content: doc.logFile }] : []),
             source:    (doc.source === 'App' ? 'App' : 'Web') as 'App' | 'Web',
             createdAt: doc.createdAt,
         }));
@@ -163,19 +164,29 @@ export async function POST(req: Request) {
             images.push(`data:${file.type};base64,${base64}`);
         }
 
-        // Log file
-        const logFile = formData.get('logFile');
-        if (logFile instanceof File) {
-            if (logFile.size > LIMITS.LOG_MAX_SIZE) {
-                return err(`Log file must be under ${LIMITS.LOG_MAX_SIZE / 1024 / 1024} MB.`, 400);
+        // Log files
+        const logFiles: { name: string, content: string }[] = [];
+        const rawLogFiles = [
+            ...formData.getAll('logFiles'),
+            ...formData.getAll('logFile') // fallback for legacy
+        ].filter((v): v is File => v instanceof File);
+
+        for (const file of rawLogFiles) {
+            if (logFiles.length >= 5) break;
+            
+            if (file.size > LIMITS.LOG_MAX_SIZE) {
+                return err(`Log file "${file.name}" must be under ${LIMITS.LOG_MAX_SIZE / 1024 / 1024} MB.`, 400);
             }
-            if (logFile.size > 0) {
-                logFileContent = await logFile.text();
+            if (file.size > 0) {
+                logFiles.push({
+                    name: sanitizeString(file.name).slice(0, 50) || 'log.txt',
+                    content: await file.text()
+                });
             }
         }
 
         // ── 4. Require at least something meaningful ─────────────────────────
-        if (!text && images.length === 0 && !logFileContent) {
+        if (!text && images.length === 0 && logFiles.length === 0) {
             return err('Feedback must include text, at least one image, or a log file.', 400);
         }
 
@@ -214,7 +225,7 @@ export async function POST(req: Request) {
             username,
             text,
             images,
-            logFile:    logFileContent,
+            logFiles,
             appVersion,
             ipHash,
             source,

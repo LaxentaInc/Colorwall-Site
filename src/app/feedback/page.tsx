@@ -11,6 +11,8 @@ interface FeedbackItem {
     username:  string;
     text:      string;
     images:    string[];
+    logFiles?: { name: string, content: string }[];
+    appVersion?: string;
     source:    'App' | 'Web';
     createdAt: Date;
 }
