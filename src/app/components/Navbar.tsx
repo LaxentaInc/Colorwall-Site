@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTheme } from "@/app/contexts/ThemeContext";
-import { Github, MessageCircle, FileText, Menu, X, Home, Download } from "lucide-react";
+import { Github, MessageCircle, MessageSquare, FileText, Menu, X, Home, Download } from "lucide-react";
 const SunIcon = () => (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
         <circle cx="12" cy="12" r="4" />
@@ -67,6 +67,7 @@ export const Navbar = () => {
         { name: "Home", href: "/", icon: Home },
         { name: "Download", href: "/download", icon: Download },
         { name: "Changelog", href: "/changelog", icon: FileText },
+        { name: "Feedback", href: "/feedback", icon: MessageSquare },
         { name: "Discussions", href: "https://github.com/orgs/Colorwall/discussions", icon: MessageCircle },
     ];
     const base = isDark
