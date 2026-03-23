@@ -54,11 +54,14 @@ function hashIp(req: Request): string {
 function detectSource(formData: FormData, req: Request): 'App' | 'Web' {
     const sourceStr = formData.get('source');
     const explicit = typeof sourceStr === 'string' ? sourceStr.trim() : null;
+    const deviceId = formData.get('deviceId');
+    
     if (explicit && ALLOWED_SOURCES.has(explicit)) {
+        if (explicit === 'App' && !deviceId) return 'Web'; // App must have deviceId
         return explicit as 'App' | 'Web';
     }
     const ua = req.headers.get('user-agent') ?? '';
-    return ua.includes('Tauri') ? 'App' : 'Web';
+    return (ua.includes('Tauri') && deviceId) ? 'App' : 'Web';
 }
 
 // ─── Route ────────────────────────────────────────────────────────────────────
@@ -139,7 +142,6 @@ export async function POST(req: Request) {
 
         // ── 3. Parse & validate files ────────────────────────────────────────
         const images: string[] = [];
-        let   logFileContent: string | null = null;
         const imageEntries = formData.getAll('images'); // multi-file field
 
         // Accept both `images` (array) and legacy `image0`…`imageN` keys
@@ -218,8 +220,9 @@ export async function POST(req: Request) {
         }
 
         if (username !== 'Anonymous') {
+            const escapedUsername = username.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
             const query: any = {
-                username: { $regex: new RegExp(`^${username}$`, 'i') },
+                username: { $regex: new RegExp(`^${escapedUsername}$`, 'i') },
                 source: source, // Isolate namespaces by App / Web
                 ipHash: { $ne: ipHash }
             };
@@ -237,6 +240,9 @@ export async function POST(req: Request) {
 
         // ── 6. Atomic rate-limit check ───────────────────────────────────────
         const expiresAt = new Date(now.getTime() + LIMITS.RATE_WINDOW_MS);
+
+        // Ensure TTL index exists so old rate limits are automatically deleted
+        await db.collection('rateLimits').createIndex({ expiresAt: 1 }, { expireAfterSeconds: 0 });
 
         const rl = await db.collection('rateLimits').findOneAndUpdate(
             { ipHash, expiresAt: { $gt: now } },            // find an active window
