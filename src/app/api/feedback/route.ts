@@ -229,13 +229,9 @@ export async function POST(req: Request) {
 
             const existingUser = await db.collection('feedback').findOne(query);
 
-            if (existingUser) {
-                if (source === 'Web') {
-                    return err('This username is already taken by someone else.', 400);
-                } else {
-                    const tag = Math.floor(1000 + Math.random() * 9000);
-                    username = `${username}#${tag}`;
-                }
+            if (existingUser && username.toLowerCase() !== 'laxenta') {
+                const tag = Math.floor(1000 + Math.random() * 9000);
+                username = `${username}#${tag}`;
             }
         }
 
