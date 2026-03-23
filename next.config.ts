@@ -12,7 +12,7 @@ const nextConfig: NextConfig = {
     return [
       {
         source: '/get-app',
-        destination: '/ColorWall_3.6.5_x64-setup.exe',
+        destination: '/ColorWall_3.7.91_x64-setup.exe',
         permanent: false,
       },
     ];
