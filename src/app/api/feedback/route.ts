@@ -220,6 +220,7 @@ export async function POST(req: Request) {
         if (username !== 'Anonymous') {
             const query: any = {
                 username: { $regex: new RegExp(`^${username}$`, 'i') },
+                source: source, // Isolate namespaces by App / Web
                 ipHash: { $ne: ipHash }
             };
             if (deviceId) {
