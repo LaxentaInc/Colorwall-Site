@@ -8,15 +8,6 @@ const nextConfig: NextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-  async redirects() {
-    return [
-      {
-        source: '/get-app',
-        destination: '/ColorWall_3.7.91_x64-setup.exe',
-        permanent: false,
-      },
-    ];
-  },
 
   async headers() {
     return [

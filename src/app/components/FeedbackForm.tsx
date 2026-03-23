@@ -210,16 +210,60 @@ export function FeedbackForm({ defaultUsername, defaultSource = 'Web', appVersio
         }).catch(() => {/* ignore */});
     }, []);
 
-    const addImages = useCallback((files: FileList | null) => {
-        if (!files) return;
-        const allowed = 5 - images.length;
-        const next = Array.from(files).slice(0, allowed);
-        setImages(prev => [...prev, ...next]);
-        next.forEach(f => {
-            const reader = new FileReader();
-            reader.onload = e => setPreviews(prev => [...prev, e.target!.result as string]);
-            reader.readAsDataURL(f);
+    const processImage = (file: File): Promise<{ file: File, preview: string }> => {
+        return new Promise((resolve) => {
+            const img = new window.Image();
+            const url = URL.createObjectURL(file);
+            img.onload = () => {
+                URL.revokeObjectURL(url);
+                const canvas = document.createElement('canvas');
+                let width = img.width;
+                let height = img.height;
+                const MAX_DIM = 1920;
+                
+                if (width > MAX_DIM || height > MAX_DIM) {
+                    const ratio = Math.min(MAX_DIM / width, MAX_DIM / height);
+                    width *= ratio;
+                    height *= ratio;
+                }
+                
+                canvas.width = width;
+                canvas.height = height;
+                const ctx = canvas.getContext('2d');
+                if (!ctx) return resolve({ file, preview: url });
+                
+                ctx.drawImage(img, 0, 0, width, height);
+                const preview = canvas.toDataURL('image/webp', 0.8);
+                canvas.toBlob(
+                    (blob) => {
+                        if (!blob) return resolve({ file, preview });
+                        const newName = file.name.replace(/\.[^/.]+$/, "") + ".webp";
+                        resolve({ 
+                            file: new File([blob], newName, { type: 'image/webp' }), 
+                            preview 
+                        });
+                    },
+                    'image/webp',
+                    0.8
+                );
+            };
+            img.onerror = () => {
+                URL.revokeObjectURL(url);
+                resolve({ file, preview: url });
+            };
+            img.src = url;
         });
+    };
+
+    const addImages = useCallback(async (files: FileList | null) => {
+        if (!files) return;
+        const allowed = 2 - images.length;
+        const next = Array.from(files).filter(f => f.type.startsWith('image/')).slice(0, allowed);
+        
+        const processed = await Promise.all(next.map(processImage));
+        
+        setImages(prev => [...prev, ...processed.map(p => p.file)]);
+        setPreviews(prev => [...prev, ...processed.map(p => p.preview)]);
     }, [images.length]);
 
     const removeImage = useCallback((idx: number) => {
@@ -257,7 +301,18 @@ export function FeedbackForm({ defaultUsername, defaultSource = 'Web', appVersio
         fd.append('source',   defaultSource);
         if (appVersion) fd.append('appVersion', appVersion);
         images.forEach(img => fd.append('images', img));
-        logFiles.forEach(log => fd.append('logFiles', log));
+        
+        for (const log of logFiles) {
+            const MAX_LOG_SIZE = 500 * 1024;
+            if (log.size > MAX_LOG_SIZE) {
+                const textContent = await log.text();
+                const truncatedText = textContent.slice(-MAX_LOG_SIZE);
+                const finalContent = `[...LOG TRUNCATED FOR SIZE...]\n${truncatedText}`;
+                fd.append('logFiles', new File([finalContent], log.name, { type: 'text/plain' }));
+            } else {
+                fd.append('logFiles', log);
+            }
+        }
 
         try {
             const res  = await fetch('/api/feedback', { method: 'POST', body: fd });
@@ -367,8 +422,8 @@ export function FeedbackForm({ defaultUsername, defaultSource = 'Web', appVersio
                             {/* Image attach */}
                             <button
                                 onClick={() => imageInputRef.current?.click()}
-                                disabled={images.length >= 5}
-                                title="Attach images (max 5)"
+                                disabled={images.length >= 2}
+                                title="Attach images (max 2)"
                                 className={`p-2 rounded-lg disabled:opacity-30 disabled:cursor-not-allowed transition-all ${
                                     isDark ? 'text-zinc-500 hover:text-zinc-300 hover:bg-white/5' : 'text-zinc-500 hover:text-zinc-800 hover:bg-zinc-100'
                                 }`}
@@ -397,7 +452,7 @@ export function FeedbackForm({ defaultUsername, defaultSource = 'Web', appVersio
                             )}
 
                             {images.length > 0 && (
-                                <span className={`text-[10px] font-mono ml-1 ${isDark ? 'text-zinc-500' : 'text-zinc-500'}`}>{images.length}/5</span>
+                                <span className={`text-[10px] font-mono ml-1 ${isDark ? 'text-zinc-500' : 'text-zinc-500'}`}>{images.length}/2</span>
                             )}
                         </div>
 
