@@ -38,5 +38,13 @@ export async function getDb(): Promise<Db> {
     // We can define a hardcoded database name like 'ColorWall' so it doesn't default to 'test'
     // if not specified in the URI.
     cachedDb = connectedClient.db('ColorWall');
+
+    // Ensure TTL index exists for rateLimits
+    try {
+        await cachedDb.collection('rateLimits').createIndex({ expiresAt: 1 }, { expireAfterSeconds: 0 });
+    } catch (e) {
+        // Ignore silent index creation failures in serverless environments
+    }
+
     return cachedDb;
 }

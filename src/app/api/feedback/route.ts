@@ -241,9 +241,6 @@ export async function POST(req: Request) {
         // ── 6. Atomic rate-limit check ───────────────────────────────────────
         const expiresAt = new Date(now.getTime() + LIMITS.RATE_WINDOW_MS);
 
-        // Ensure TTL index exists so old rate limits are automatically deleted
-        await db.collection('rateLimits').createIndex({ expiresAt: 1 }, { expireAfterSeconds: 0 });
-
         const rl = await db.collection('rateLimits').findOneAndUpdate(
             { ipHash, expiresAt: { $gt: now } },            // find an active window
             { $setOnInsert: { ipHash, createdAt: now, expiresAt } },
