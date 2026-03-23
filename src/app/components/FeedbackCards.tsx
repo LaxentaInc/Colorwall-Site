@@ -88,16 +88,13 @@ function ExpandableImageGrid({ images, theme }: { images: string[], theme: strin
         <div className={`mt-3 grid gap-2 ${images.length === 1 ? 'grid-cols-1 max-w-sm' : 'grid-cols-2 max-w-md'}`}>
             {images.map((src, idx) => (
                 <a key={idx} href={src} target="_blank" rel="noreferrer"
-                    className={`relative block overflow-hidden rounded-lg border transition-all group/img ${
-                        isDark ? 'border-white/8 hover:border-white/20' : 'border-zinc-200 hover:border-zinc-300'
+                    className={`relative block overflow-hidden rounded-lg border ${
+                        isDark ? 'border-white/8' : 'border-zinc-200'
                     }`}
                     style={{ aspectRatio: images.length === 1 ? '16/9' : '1/1' }}
                 >
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={src} alt="" className="w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-500 opacity-95 group-hover/img:opacity-100" loading="lazy" />
-                    <div className={`absolute inset-0 opacity-0 group-hover/img:opacity-100 transition-opacity flex items-center justify-center ${isDark ? 'bg-black/30' : 'bg-black/10'}`}>
-                        <span className={`text-[10px] font-mono px-2 py-1 rounded-md ${isDark ? 'text-white/80 bg-black/50' : 'text-zinc-900 bg-white/90'}`}>View</span>
-                    </div>
+                    <img src={src} alt="" className="w-full h-full object-cover" loading="lazy" />
                 </a>
             ))}
         </div>
@@ -120,7 +117,7 @@ function MessagesList({ items, isExpanded, theme }: { items: FeedbackItem[], isE
                             <span className={`block text-[10px] font-mono mb-1 ${isDark ? 'text-zinc-600' : 'text-zinc-400'}`}>{timeAgo(item.createdAt)}</span>
                         )}
                         {item.text && (
-                            <p className={`text-[13px] leading-[1.6] whitespace-pre-wrap font-[450] ${isDark ? 'text-zinc-300' : 'text-zinc-600'}`}>
+                            <p className={`text-[13px] leading-[1.6] whitespace-pre-wrap font-[450] select-text cursor-text ${isDark ? 'text-zinc-300' : 'text-zinc-600'}`}>
                                 {displayText}
                             </p>
                         )}
@@ -130,7 +127,7 @@ function MessagesList({ items, isExpanded, theme }: { items: FeedbackItem[], isE
                                 <div className={`flex items-center gap-2 px-3 py-2 text-[10px] uppercase tracking-wider font-mono border-b ${isDark ? 'bg-indigo-500/10 border-indigo-500/20 text-indigo-400' : 'bg-indigo-50 border-indigo-200 text-indigo-600'}`}>
                                     <FileText size={12} /> {log.name}
                                 </div>
-                                <div className={`p-3 text-[11px] font-mono overflow-x-auto whitespace-pre-wrap max-h-48 ${
+                                <div className={`p-3 text-[11px] font-mono overflow-x-auto whitespace-pre-wrap max-h-48 select-text cursor-text ${
                                     isDark ? 'bg-black/40 text-indigo-100/70' : 'bg-white text-indigo-900/80'
                                 }`}>
                                     {log.content}
@@ -156,15 +153,9 @@ function WebCard({ group, index, theme }: { group: FeedbackGroup; index: number;
     const needsExpansion = group.items.length > 1 || (first.text && first.text.length > 250) || (first.logFiles && first.logFiles.length > 0);
 
     return (
-        <div className={`group relative rounded-xl border backdrop-blur-xl overflow-hidden transition-all duration-300 ${
-            isDark ? 'border-white/8 bg-[#0d0d0f]/90 hover:border-white/14 shadow-none' : 'border-zinc-200 bg-white hover:border-zinc-300 shadow-sm'
+        <div className={`relative rounded-xl border overflow-hidden ${
+            isDark ? 'border-white/8 bg-[#0d0d0f]/90 shadow-none' : 'border-zinc-200 bg-white shadow-sm'
         }`}>
-            {/* Hover glow */}
-            <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none bg-gradient-to-br ${color.bg} rounded-xl`} />
-            
-            {/* Top accent line */}
-            <div className="absolute top-0 left-0 right-0 h-px opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                style={{ background: `linear-gradient(90deg, transparent, ${color.accent}60, transparent)` }} />
 
             <div className="relative z-10 p-5">
                 {/* User row */}
@@ -218,12 +209,9 @@ function AppCard({ group, index, theme }: { group: FeedbackGroup; index: number;
     const needsExpansion = group.items.length > 1 || (first.text && first.text.length > 250) || (first.logFiles && first.logFiles.length > 0);
 
     return (
-        <div className={`group relative rounded-xl border backdrop-blur-xl overflow-hidden transition-all duration-300 ${
-            isDark ? 'border-blue-500/10 bg-[#08090d]/95 hover:border-blue-500/20 shadow-none' : 'border-blue-600/10 bg-slate-50 hover:border-blue-600/20 shadow-sm'
+        <div className={`relative rounded-xl border overflow-hidden ${
+            isDark ? 'border-blue-500/10 bg-[#08090d]/95 shadow-none' : 'border-blue-600/10 bg-slate-50 shadow-sm'
         }`}>
-            {/* Subtle blue top line */}
-            <div className={`absolute top-0 left-0 right-0 h-px bg-gradient-to-r ${isDark ? 'from-transparent via-blue-500/30 to-transparent' : 'from-transparent via-blue-500/20 to-transparent'}`} />
-            <div className={`absolute inset-0 bg-gradient-to-br pointer-events-none rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 ${isDark ? 'from-blue-500/[0.03] to-transparent' : 'from-blue-500/[0.02] to-transparent'}`} />
 
             <div className="relative z-10 p-5">
                 {/* Header row */}
@@ -241,7 +229,7 @@ function AppCard({ group, index, theme }: { group: FeedbackGroup; index: number;
                                 <span className={`text-[10px] font-mono ${isDark ? 'text-zinc-500' : 'text-zinc-500'}`}>{timeAgo(first.createdAt)}</span>
                                 <span className={`text-[10px] ${isDark ? 'text-zinc-700' : 'text-zinc-300'}`}>·</span>
                                 <span className={`text-[10px] font-mono ${isDark ? 'text-blue-500/50' : 'text-blue-600/60'}`}>
-                                    {first.appVersion ? `Engine v${first.appVersion}` : 'Engine V1'}
+                                    {first.appVersion ? `Engine v${first.appVersion.replace(/^v/i, '')}` : 'Engine V1'}
                                 </span>
                             </div>
                         </div>
@@ -258,7 +246,7 @@ function AppCard({ group, index, theme }: { group: FeedbackGroup; index: number;
                         return (
                             <div key={item.id} className={i > 0 ? `pt-3 border-t ${isDark ? 'border-white/[0.04]' : 'border-blue-500/5'}` : ''}>
                                 {item.text && (
-                                    <p className={`text-[12px] leading-[1.6] whitespace-pre-wrap ${isDark ? 'text-zinc-400' : 'text-zinc-600'}`}>
+                                    <p className={`text-[12px] leading-[1.6] whitespace-pre-wrap select-text cursor-text ${isDark ? 'text-zinc-400' : 'text-zinc-600'}`}>
                                         {/* Prefix message with a › prompt symbol */}
                                         <span className={`select-none mr-2 ${isDark ? 'text-blue-500/40' : 'text-blue-600/30'}`}>›</span>
                                         {displayText}
@@ -270,7 +258,7 @@ function AppCard({ group, index, theme }: { group: FeedbackGroup; index: number;
                                         <div className={`flex items-center gap-2 px-3 py-2 text-[10px] uppercase tracking-wider font-mono border-b ${isDark ? 'bg-white/5 border-white/10 text-zinc-400' : 'bg-slate-100 border-slate-200 text-zinc-500'}`}>
                                             <FileText size={12} /> {log.name}
                                         </div>
-                                        <div className={`p-3 text-[11px] font-mono overflow-x-auto whitespace-pre-wrap max-h-48 ${
+                                        <div className={`p-3 text-[11px] font-mono overflow-x-auto whitespace-pre-wrap max-h-48 select-text cursor-text ${
                                             isDark ? 'bg-black/30 text-zinc-300' : 'bg-white text-zinc-700'
                                         }`}>
                                             {log.content}

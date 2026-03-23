@@ -10,7 +10,7 @@ const LIMITS = {
     IMAGE_MAX_SIZE: 2 * 1024 * 1024,   // 2 MB
     LOG_MAX_SIZE:   1 * 1024 * 1024,   // 1 MB
     IMAGE_COUNT:    5,
-    RATE_WINDOW_MS: 30 * 60 * 1000,    // 30 min
+    RATE_WINDOW_MS: 1 * 60 * 1000,     // 1 min
 } as const;
 
 const ALLOWED_IMAGE_TYPES = new Set([
@@ -142,7 +142,7 @@ export async function POST(req: Request) {
             ...Array.from(formData.keys())
                 .filter(k => /^image\d+$/.test(k))
                 .flatMap(k => formData.getAll(k)),
-        ].filter((v): v is File => v instanceof File);
+        ].filter((v): v is File => typeof v === 'object' && v !== null && 'size' in v && 'type' in v && 'arrayBuffer' in v);
 
         for (const file of allImageFiles) {
             if (images.length >= LIMITS.IMAGE_COUNT) break;
@@ -170,7 +170,7 @@ export async function POST(req: Request) {
         const rawLogFiles = [
             ...formData.getAll('logFiles'),
             ...formData.getAll('logFile') // fallback for legacy
-        ].filter((v): v is File => v instanceof File);
+        ].filter((v): v is File => typeof v === 'object' && v !== null && 'size' in v && 'type' in v && 'arrayBuffer' in v);
 
         for (const file of rawLogFiles) {
             if (logFiles.length >= 5) break;
@@ -218,7 +218,7 @@ export async function POST(req: Request) {
 
         // If a document existed before our upsert, the IP is rate-limited
         if (rl !== null) {
-            return err('You have already submitted feedback recently. Please wait 30 minutes.', 429);
+            return err('You have already submitted feedback recently. Please wait 1 minute.', 429);
         }
 
         // ── 7. Persist feedback ──────────────────────────────────────────────

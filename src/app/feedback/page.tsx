@@ -39,6 +39,8 @@ async function getFeedback(): Promise<FeedbackItem[]> {
             username:  doc.username ?? 'Anonymous',
             text:      doc.text     ?? '',
             images:    doc.images   ?? [],
+            logFiles:  doc.logFiles ?? (doc.logFile ? [{ name: 'log.txt', content: doc.logFile }] : []),
+            appVersion: doc.appVersion,
             source:    (doc.source === 'App' ? 'App' : 'Web') as 'App' | 'Web',
             createdAt: doc.createdAt,
         }));

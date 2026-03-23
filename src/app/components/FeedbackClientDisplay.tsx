@@ -64,18 +64,18 @@ export function FeedbackClientDisplay({ feedbacks }: FeedbackClientDisplayProps)
             style={{ fontFamily: "'DM Sans', 'Geist', sans-serif" }}
         >
             {/* Noise overlay */}
-            <div className={`pointer-events-none fixed inset-0 z-0 ${isDark ? 'opacity-[0.025]' : 'opacity-[0.05]'}`}
+            <div className={`pointer-events-none fixed inset-0 z-0 ${isDark ? 'opacity-[0.035]' : 'opacity-[0.05]'}`}
                 style={{
-                    backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
-                    backgroundRepeat: 'repeat', backgroundSize: '200px 200px',
+                    backgroundImage: `url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyBAMAAADsEZWCAAAAGFBMVEUAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAABJz2zMAAAACHRSTlMzMzMzMzMzM8A/4eYAAACbSURBVDjLpZGxDQMwDASJ/y18q0L5K8zM4E5AAXqSBM4+M9d7+E7oO9c5M9d7+E7oO9c5M9d7+E7oO9c5M9d7+E7oO9c5M9d7+E7oO9c5M9d7+E7oO9c5M9d7+E7oO9c5M9d7+E7oO9c5M9d7+E7oO9c5M9d7+E7oO9c5M9d7+E7oO9c5M9d7+E7oO9c5M9d7+E7oO/8Bv9B6wT4CxcwAAAAASUVORK5CYII=")`,
+                    backgroundRepeat: 'repeat', backgroundSize: '100px 100px',
                 }} />
 
             {/* Ambient orbs */}
-            <div className="pointer-events-none fixed top-[-15%] left-[-5%] w-[55%] h-[55%] rounded-full opacity-40 mix-blend-screen"
+            <div className="pointer-events-none fixed top-[-15%] left-[-5%] w-[55%] h-[55%] rounded-full opacity-40"
                 style={{ background: `radial-gradient(circle, ${isDark ? 'rgba(99,102,241,0.12)' : 'rgba(99,102,241,0.08)'} 0%, transparent 70%)` }} />
-            <div className="pointer-events-none fixed bottom-[-20%] right-[-10%] w-[50%] h-[50%] rounded-full opacity-30 mix-blend-screen"
+            <div className="pointer-events-none fixed bottom-[-20%] right-[-10%] w-[50%] h-[50%] rounded-full opacity-30"
                 style={{ background: `radial-gradient(circle, ${isDark ? 'rgba(139,92,246,0.10)' : 'rgba(139,92,246,0.06)'} 0%, transparent 70%)` }} />
-            <div className="pointer-events-none fixed top-[40%] right-[20%] w-[30%] h-[30%] rounded-full opacity-20 mix-blend-screen"
+            <div className="pointer-events-none fixed top-[40%] right-[20%] w-[30%] h-[30%] rounded-full opacity-20"
                 style={{ background: `radial-gradient(circle, ${isDark ? 'rgba(6,182,212,0.08)' : 'rgba(6,182,212,0.05)'} 0%, transparent 70%)` }} />
 
             {/* Top scan line */}
@@ -87,7 +87,6 @@ export function FeedbackClientDisplay({ feedbacks }: FeedbackClientDisplayProps)
                 <div className="mb-20">
                     <div className="flex items-center gap-3 mb-7">
                         <span className="relative flex h-2 w-2">
-                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75" />
                             <span className="relative inline-flex rounded-full h-2 w-2 bg-indigo-500" />
                         </span>
                         <span className="text-[11px] font-mono font-bold uppercase tracking-[0.2em] text-indigo-400">

@@ -144,11 +144,12 @@ function ImagePreview({ src, onRemove, isDark }: { src: string; onRemove: () => 
 export interface FeedbackFormProps {
     defaultUsername?: string;
     defaultSource?: 'App' | 'Web';
+    appVersion?: string;
 }
 
 type Stage = 'username' | 'form' | 'submitting' | 'success' | 'error';
 
-export function FeedbackForm({ defaultUsername, defaultSource = 'Web' }: FeedbackFormProps) {
+export function FeedbackForm({ defaultUsername, defaultSource = 'Web', appVersion }: FeedbackFormProps) {
     const { theme } = useTheme();
     const isDark = theme === 'dark';
 
@@ -254,6 +255,7 @@ export function FeedbackForm({ defaultUsername, defaultSource = 'Web' }: Feedbac
         fd.append('username', username);
         fd.append('text',     text.trim());
         fd.append('source',   defaultSource);
+        if (appVersion) fd.append('appVersion', appVersion);
         images.forEach(img => fd.append('images', img));
         logFiles.forEach(log => fd.append('logFiles', log));
 
@@ -273,7 +275,7 @@ export function FeedbackForm({ defaultUsername, defaultSource = 'Web' }: Feedbac
 
     // ── Render ────────────────────────────────────────────────────────────────
     return (
-        <div className={`w-full rounded-2xl border backdrop-blur-xl overflow-hidden ${
+        <div className={`w-full rounded-2xl border overflow-hidden ${
             isDark ? 'border-white/8 bg-[#0d0d0f]/90 shadow-none' : 'border-zinc-200 bg-white/90 shadow-sm'
         }`}>
 
