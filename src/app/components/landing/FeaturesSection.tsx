@@ -1,16 +1,16 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Zap, Monitor, Search, HardDrive, Paintbrush, Shield } from "lucide-react";
+import { Zap, Monitor, Search, HardDrive, Paintbrush, Shield, Layout, MousePointer2, Cpu } from "lucide-react";
 import { GradientHeading } from "./GradientHeading";
 
 // -- feature data --
 const features = [
     {
         id: "01",
-        icon: Zap,
-        title: "Made in Rust/Tauri",
-        desc: "Insanely fast even on slow systems, >10mb APP; Community Driven!",
+        icon: Cpu,
+        title: "Built in Rust & Tauri",
+        desc: "insanely fast and lightweight. <10mb app size with near-zero background overhead and native performance.",
     },
     {
         id: "02",
@@ -21,7 +21,7 @@ const features = [
     {
         id: "03",
         icon: Monitor,
-        title: "4K Live Wallpapers",
+        title: "4K/8k Live Wallpapers",
         desc: "Stunning video wallpapers at native resolution with buttery smooth playback.",
     },
     {
@@ -42,12 +42,18 @@ const features = [
         title: "Taskbar Effects",
         desc: "Transparent, blur, or acrylic taskbar with custom colors and opacity controls.",
     },
-    // {
-    //     id: "07",
-    //     icon: Shield,
-    //     title: "Offline & Private",
-    //     desc: "Everything cached locally. No cloud, no tracking, no accounts, no bullshit.",
-    // },
+    {
+        id: "07",
+        icon: Layout,
+        title: "HTML Widgets",
+        desc: "desktop widgets powered by modern web tech. create your own or use community-made snippets.",
+    },
+    {
+        id: "08",
+        icon: MousePointer2,
+        title: "Interactive Wallpapers",
+        desc: "fully interactive html5 wallpapers. webgl, canvas, and shaders that react to your mouse and keyboard.",
+    }
 ];
 
 export const FeaturesSection = ({ theme }: { theme: "dark" | "light" }) => {
