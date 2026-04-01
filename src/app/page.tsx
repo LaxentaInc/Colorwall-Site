@@ -32,7 +32,7 @@ export default function ColorWallLanding() {
                 title="STORE"
                 description="Access thousands of wallpapers from 8+ sources. One unified search bar, infinite inspiration — no account needed."
                 badge="8 SOURCES · 4K · UNIFIED"
-                imageSrc="/Store.PNG"
+                imageSrcs={["/Store.PNG", "/modal.PNG"]}
                 index={0}
                 theme={theme}
             />
@@ -48,15 +48,36 @@ export default function ColorWallLanding() {
 
             <ShowcaseCard
                 title="CUSTOMIZATION"
-                description="Deep integration. Style your taskbar with blur/acrylic effects, configure auto-start behavior hidden in tray, and tweak performance settings."
-                badge="TASKBAR · AUTOSTART · TWEAKS"
-                imageSrcs={["/Video.PNG", "/multi.PNG", "/taskbar.PNG", "/ADV.PNG", "/perf.PNG"]}
+                description="unmatched performance and control. built on rust & tauri for near-zero impact. style your taskbar with blur/acrylic effects, control multi-monitor setups, and tweak renderer presets."
+                badge="RUST · TAURI · LOW OVERHEAD"
+                imageSrcs={["/Video.PNG", "/PEAKmodalpreview.PNG", "/multi.PNG", "/taskbar.PNG", "/ADV.PNG", "/perf.PNG"]}
                 index={2}
                 theme={theme}
                 layout="vertical"
                 imageFit="contain"
             />
 
+            <ShowcaseCard
+                title="WIDGETS"
+                description="desktop widgets powered by modern web tech. add calendars, clocks, or custom information directly to your desktop. clean, fast, and fully customizable."
+                badge="HTML · JS · PINNED"
+                imageSrcs={["/widgets.PNG"]}
+                index={3}
+                theme={theme}
+                layout="vertical"
+                imageFit="contain"
+            />
+
+            <ShowcaseCard
+                title="INTERACTIVE"
+                description="wallpapers that come alive. fully interactive html5 canvases and webgl shaders that respond to your mouse movements and clicks. your desktop is now a playground."
+                badge="WEBGL · DYNAMIC · INTERACTIVE"
+                imageSrcs={["/INTERACTIVES.PNG"]}
+                index={4}
+                theme={theme}
+                layout="vertical"
+                imageFit="contain"
+            />
             <HomeShowcase theme={theme} />
 
             <ComparisonTable theme={theme} />

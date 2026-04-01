@@ -106,28 +106,31 @@ export const ShowcaseCard = ({
                            Just the content floating in space. 
                         */}
                         <div className={`relative w-full group
-                            ${layout === "grid" ? "aspect-video" : "aspect-[21/9] sm:aspect-[21/9]"}`}
+                            ${layout === "grid" ? "aspect-video" : (imageFit === "contain" ? "" : "aspect-[21/9] sm:aspect-[21/9]")}`}
                         >
                             {displayImages.map((src, i) => {
                                 const active = i === currentImgIndex;
+                                const isRelative = layout !== "grid" && imageFit === "contain" && i === 0;
+
                                 return (
                                     <div
                                         key={src}
-                                        className={`absolute inset-0 w-full h-full transition-all duration-1000 ease-in-out
+                                        className={`${isRelative ? 'relative' : 'absolute inset-0'} w-full ${isRelative ? 'h-auto' : 'h-full'} transition-all duration-1000 ease-in-out
                                             ${active ? "opacity-100 translate-y-0 scale-100" : "opacity-0 translate-y-4 scale-95"}`}
                                     >
-                                        <div className={`relative w-full h-full overflow-hidden rounded-xl sm:rounded-2xl
-                                            ${theme === "dark" ? "bg-white/5" : "bg-black/5"}`}>
+                                        <div className={`relative w-full ${isRelative ? 'h-auto' : 'h-full'} 
+                                            ${imageFit === "contain" ? "" : `overflow-hidden rounded-xl sm:rounded-2xl ${theme === "dark" ? "bg-white/5" : "bg-black/5"}`}`}>
 
                                             {/* For 'contain' mode (customization screenshots), we still want them to look good */}
                                             {imageFit === "contain" ? (
-                                                <div className="w-full h-full p-8 md:p-12 flex items-center justify-center">
+                                                <div className={`w-full ${isRelative ? 'h-auto' : 'h-full'} flex items-center justify-center`}>
                                                     <Image
                                                         src={src}
                                                         alt={title}
                                                         width={1600}
                                                         height={900}
-                                                        className="w-full h-auto max-h-full object-contain drop-shadow-2xl"
+                                                        className="w-full h-auto max-h-full object-contain drop-shadow-2xl rounded-2xl sm:rounded-[2rem]"
+                                                        style={{ height: 'auto' }}
                                                         priority={index === 0}
                                                     />
                                                 </div>
@@ -138,6 +141,7 @@ export const ShowcaseCard = ({
                                                     width={1600}
                                                     height={1200}
                                                     className="w-full h-full object-cover"
+                                                    style={{ height: 'auto' }}
                                                     priority={index === 0}
                                                 />
                                             )}

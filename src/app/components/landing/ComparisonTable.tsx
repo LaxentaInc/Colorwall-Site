@@ -47,6 +47,8 @@ export const ComparisonTable = ({ theme }: { theme: "dark" | "light" }) => {
                                 ["GPU (4K video)", "19%", "74%", "83.8%"],
                                 ["Open Source", "AGPL-3", "Closed Source", "GPL-3"],
                                 ["Store", "Free Forever", "✗ Paid Workshop only", "✗ Self Upload"],
+                                ["HTML Widgets", "Native", "✗ Third party", "✗ Limited"],
+                                ["Interactive", "Canvas/WebGL", "Yes (Web)", "✗ Web only"],
                                 ["Offline Mode", "Full", "Partial", "Full"],
                                 ["Taskbar Effects", "Acrylic/Blur", "Even better", "Yes"],
                             ].map(([label, cw, we, lv]) => (
