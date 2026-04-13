@@ -68,10 +68,10 @@ export const HeroSection = ({ theme }: { theme?: "dark" | "light" }) => {
                     <Typewriter
                         words={[
                             "< The desktop customization engine you deserved />",
-                            "< Built in Rust + Tauri · ~5MB · Near-zero overhead />",
-                            "< 4K 60fps · Hardware decoded · Lower GPU than alternatives />",
-                            "< 8 wallpaper sources · One unified store · No account needed />",
-                            "< Your desktop should feel alive. Now it can. />",
+                            "< Built in Rust + Tauri · Workshop/8k/Local/Shader Support · Multiple Renderers />",
+                            "< 8K Vsync · Hardware accelerated DirectX 3D 11 · Minimal GPU even on the highest workloads />",
+                            "< 10+ Wallpaper sources · One unified store · Inbuild Shader configuarations (in dev) />",
+                            "< We made something beautiful, people will complain & compare idc, but we will keep improving. />",
                         ]}
                         loop={0}
                         cursor
