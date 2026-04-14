@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useState, useEffect } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { Typewriter } from "react-simple-typewriter";
 import Image from "next/image";
@@ -12,12 +12,16 @@ export const HeroSection = ({ theme }: { theme?: "dark" | "light" }) => {
     const { scrollYProgress } = useScroll();
     const heroScale = useTransform(scrollYProgress, [0, 0.25], [1, 0.95]);
 
-    /* randomly select a bg video each page load — ~30% each new webm, else the default webm */
-    const bgVideo = useMemo(() => {
+    const [bgVideo, setBgVideo] = useState({ src: "/videos/myCutekoiiii.webm", type: "video/webm" });
+
+    useEffect(() => {
         const r = Math.random();
-        if (r < 0.3) return { src: "/wallpaper_1775826051.webm", type: "video/webm" };
-        if (r < 0.6) return { src: "/Shimoe_Koharu_-_Blue_Archive.webm", type: "video/webm" };
-        return { src: "/videos/myCutekoiiii.webm", type: "video/webm" };
+        if (r < 0.3) {
+            setBgVideo({ src: "/wallpaper_1775826051.webm", type: "video/webm" });
+        } else if (r < 0.6) {
+            setBgVideo({ src: "/Shimoe_Koharu_-_Blue_Archive.webm", type: "video/webm" });
+        }
+        // otherwise it stays as the default we initialized with
     }, []);
 
     return (
