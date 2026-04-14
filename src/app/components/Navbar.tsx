@@ -130,7 +130,7 @@ export const Navbar = () => {
                     }`}
             >        <div className="flex items-center h-14 px-4 gap-2">
                     <Link href="/" className="group flex items-center mr-1 opacity-90 hover:opacity-100 transition-opacity shrink-0 relative">
-                        <img src="/colorwall.png" alt="ColorWall" className="h-7 object-contain" />
+                        <img src="/colorwall.png" alt="ColorWall logo" className="h-7 object-contain" />
                         <span className={`absolute left-[76px] top-1/2 -translate-y-1/2 px-4 py-2 rounded-xl text-xs font-mono font-bold tracking-widest uppercase whitespace-nowrap opacity-0 group-hover:opacity-100 shadow-xl transition-all pointer-events-none drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]
               ${isDark ? "bg-[#0a0a0a]/90 border border-white/10 text-white" : "bg-white/90 border border-black/10 text-black"}`}>
                             ColorWall
@@ -163,20 +163,21 @@ export const Navbar = () => {
                     <div className="flex-1 md:flex-none" />
                     <div className="hidden md:flex items-center gap-0.5">
                         <a href="https://github.com/colorwall/colorwall" target="_blank" rel="noopener noreferrer"
-                            className={`p-2 rounded-lg transition-all duration-200 ${iconBtn}`}>
+                            aria-label="GitHub" className={`p-2 rounded-lg transition-all duration-200 ${iconBtn}`}>
                             <GithubIcon />
                         </a>
                         <a href="https://discord.gg/cHVwPkBC7p" target="_blank" rel="noopener noreferrer"
-                            className={`p-2 rounded-lg transition-all duration-200 ${isDark ? "text-white/50 hover:text-[#5865F2] hover:bg-[#5865F2]/10" : "text-black/40 hover:text-[#5865F2] hover:bg-[#5865F2]/8"}`}>
+                            aria-label="Discord" className={`p-2 rounded-lg transition-all duration-200 ${isDark ? "text-white/50 hover:text-[#5865F2] hover:bg-[#5865F2]/10" : "text-black/40 hover:text-[#5865F2] hover:bg-[#5865F2]/8"}`}>
                             <DiscordIcon />
                         </a>
                         <a href="https://x.com/colorwall_xyz" target="_blank" rel="noopener noreferrer"
-                            className={`p-2 rounded-lg transition-all duration-200 ${iconBtn}`}>
+                            aria-label="X (Twitter)" className={`p-2 rounded-lg transition-all duration-200 ${iconBtn}`}>
                             <XIcon />
                         </a>
                         <div className={`w-px h-5 mx-1.5 ${isDark ? "bg-white/10" : "bg-black/8"}`} />
                         <button onClick={toggleTheme}
                             className={`p-2 rounded-lg transition-all duration-200 ${iconBtn}`}
+                            aria-label={isDark ? "Switch to light theme" : "Switch to dark theme"}
                             title="Toggle theme">
                             {isDark ? <SunIcon /> : <MoonIcon />}
                         </button>
@@ -192,11 +193,12 @@ export const Navbar = () => {
                         </button>
                     </div>
                     <div className="md:hidden flex items-center gap-1">
-                        <button onClick={toggleTheme} className={`p-2 rounded-lg transition-all duration-200 ${iconBtn}`}>
+                        <button onClick={toggleTheme} aria-label={isDark ? "Switch to light theme" : "Switch to dark theme"} className={`p-2 rounded-lg transition-all duration-200 ${iconBtn}`}>
                             {isDark ? <SunIcon /> : <MoonIcon />}
                         </button>
                         <button
                             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                            aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
                             className={`p-2 rounded-lg transition-all duration-200 ${iconBtn}`}
                         >
                             {isMobileMenuOpen ? <X size={18} strokeWidth={1.8} /> : <Menu size={18} strokeWidth={1.8} />}
@@ -236,15 +238,15 @@ export const Navbar = () => {
                                 })}
                                 <div className={`flex items-center gap-2 px-3 pt-1.5 mt-0.5 border-t ${isDark ? "border-white/8" : "border-black/6"}`}>
                                     <a href="https://github.com/colorwall/colorwall" target="_blank" rel="noopener noreferrer"
-                                        className={`p-2 rounded-lg transition-all duration-200 ${iconBtn}`}>
+                                        aria-label="GitHub" className={`p-2 rounded-lg transition-all duration-200 ${iconBtn}`}>
                                         <GithubIcon />
                                     </a>
                                     <a href="https://discord.gg/cHVwPkBC7p" target="_blank" rel="noopener noreferrer"
-                                        className={`p-2 rounded-lg transition-all duration-200 ${isDark ? "text-white/50 hover:text-[#5865F2] hover:bg-[#5865F2]/10" : "text-black/40 hover:text-[#5865F2] hover:bg-[#5865F2]/8"}`}>
+                                        aria-label="Discord" className={`p-2 rounded-lg transition-all duration-200 ${isDark ? "text-white/50 hover:text-[#5865F2] hover:bg-[#5865F2]/10" : "text-black/40 hover:text-[#5865F2] hover:bg-[#5865F2]/8"}`}>
                                         <DiscordIcon />
                                     </a>
                                     <a href="https://x.com/colorwall_xyz" target="_blank" rel="noopener noreferrer"
-                                        className={`p-2 rounded-lg transition-all duration-200 ${iconBtn}`}>
+                                        aria-label="X (Twitter)" className={`p-2 rounded-lg transition-all duration-200 ${iconBtn}`}>
                                         <XIcon />
                                     </a>
                                     {/* sound toggle in mobile menu */}

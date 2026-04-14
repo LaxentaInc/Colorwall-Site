@@ -107,15 +107,16 @@ export const Footer = ({ theme }: { theme: "dark" | "light" }) => {
 
                     <div className="flex gap-4">
                         {[
-                            { icon: Github, href: "https://github.com/shelleyloosespatience" },
-                            { icon: MessageCircle, href: "https://discord.gg/QYwhay7r2V" },
-                            { icon: Mail, href: "mailto:help.colorwall@gmail.com" }
+                            { icon: Github, href: "https://github.com/shelleyloosespatience", label: "GitHub" },
+                            { icon: MessageCircle, href: "https://discord.gg/QYwhay7r2V", label: "Discord" },
+                            { icon: Mail, href: "mailto:help.colorwall@gmail.com", label: "Email" }
                         ].map((item, i) => (
                             <a
                                 key={i}
                                 href={item.href}
                                 target="_blank"
                                 rel="noopener noreferrer"
+                                aria-label={item.label}
                                 className={`p-2 rounded-lg transition-colors duration-200
                                     ${isDark
                                         ? "bg-white/5 text-white/60 hover:bg-[#00A4FF] hover:text-white"
