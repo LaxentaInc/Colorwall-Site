@@ -141,7 +141,7 @@ function MessagesList({ items, isExpanded, theme }: { items: FeedbackItem[], isE
     );
 }
 
-function ReplySection({ theme, isApp, threadId, initialReplies }: { theme: string, isApp?: boolean, threadId: string, initialReplies: any[] }) {
+function ReplySection({ theme, isApp, threadId, initialReplies }: { theme: string, isApp?: boolean, threadId: string, initialReplies: {id: string, text: string, username: string, createdAt: Date}[] }) {
     const isDark = theme === 'dark';
     const [isReplying, setIsReplying] = useState(false);
     const [replyText, setReplyText] = useState('');
@@ -192,7 +192,7 @@ function ReplySection({ theme, isApp, threadId, initialReplies }: { theme: strin
             } else {
                 alert(`Error: ${data.error}`);
             }
-        } catch (e) {
+        } catch {
             alert('Failed to post reply.');
         } finally {
             setIsSubmitting(false);
@@ -351,7 +351,7 @@ function WebCard({ group, index, theme }: { group: FeedbackGroup; index: number;
                         </button>
                     </div>
                 )}
-                <ReplySection theme={theme} isApp={false} threadId={first.id} initialReplies={(first as any).replies || []} />
+                <ReplySection theme={theme} isApp={false} threadId={first.id} initialReplies={(first as unknown as {replies: {id: string, text: string, username: string, createdAt: Date}[]}).replies || []} />
             </div>
         </div>
     );
@@ -460,7 +460,7 @@ function AppCard({ group, index, theme }: { group: FeedbackGroup; index: number;
                         </button>
                     </div>
                 )}
-                <ReplySection theme={theme} isApp={true} threadId={first.id} initialReplies={(first as any).replies || []} />
+                <ReplySection theme={theme} isApp={true} threadId={first.id} initialReplies={(first as unknown as {replies: {id: string, text: string, username: string, createdAt: Date}[]}).replies || []} />
             </div>
         </div>
     );

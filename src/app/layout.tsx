@@ -26,7 +26,8 @@ const geistMono = Geist_Mono({
 });
 
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.colorwall.xyz";
+// hardcoded — do NOT use env var, vercel env has the wrong domain
+const SITE_URL = "https://www.colorwall.xyz";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
