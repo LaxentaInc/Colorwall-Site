@@ -47,20 +47,8 @@ export function FeedbackClientDisplay({ feedbacks }: FeedbackClientDisplayProps)
         }
     }, [feedbacks]);
 
-    // Infinite scroll observer
-    const observer = useRef<IntersectionObserver | null>(null);
-    const lastElementRef = useCallback((node: HTMLDivElement | null) => {
-        if (isLoadingIndicator) return;
-        if (observer.current) observer.current.disconnect();
-        observer.current = new IntersectionObserver(entries => {
-            if (entries[0].isIntersecting && hasMore) {
-                loadMore();
-            }
-        });
-        if (node) observer.current.observe(node);
-    }, [isLoadingIndicator, hasMore]);
-
-    const loadMore = async () => {
+    // load more entries for infinite scroll
+    const loadMore = useCallback(async () => {
         setIsLoadingIndicator(true);
         try {
             const res = await fetch(`/api/feedback?skip=${items.length}&limit=20`);
@@ -73,7 +61,20 @@ export function FeedbackClientDisplay({ feedbacks }: FeedbackClientDisplayProps)
             setHasMore(false);
         }
         setIsLoadingIndicator(false);
-    };
+    }, [items.length]);
+
+    // infinite scroll observer
+    const observer = useRef<IntersectionObserver | null>(null);
+    const lastElementRef = useCallback((node: HTMLDivElement | null) => {
+        if (isLoadingIndicator) return;
+        if (observer.current) observer.current.disconnect();
+        observer.current = new IntersectionObserver(entries => {
+            if (entries[0].isIntersecting && hasMore) {
+                loadMore();
+            }
+        });
+        if (node) observer.current.observe(node);
+    }, [isLoadingIndicator, hasMore, loadMore]);
 
     // Grouping logic (ported from page.tsx)
     const groups: FeedbackGroup[] = [];
@@ -143,7 +144,7 @@ export function FeedbackClientDisplay({ feedbacks }: FeedbackClientDisplayProps)
                             <p className={`text-[15px] max-w-lg leading-relaxed ${isDark ? 'text-zinc-500' : 'text-zinc-600'}`}>
                                 Unfiltered reports, feature requests, and bug logs, tell us anything related to {' '}
                                 <span className={`font-medium ${isDark ? 'text-zinc-300' : 'text-zinc-800'}`}>ColorWall</span>.
-                                Every voice shapes the next release. Don't be like me and post random stuff :3
+                                Every voice shapes the next release. Don&apos;t be like me and post random stuff :3
                             </p>
                         </div>
 
@@ -176,7 +177,7 @@ export function FeedbackClientDisplay({ feedbacks }: FeedbackClientDisplayProps)
                             <p className={`text-sm mt-1 ${isDark ? 'text-zinc-600' : 'text-zinc-500'}`}>Be the first to leave feedback.</p>
                         </div>
                     ) : (
-                        <FeedbackCards groups={groups as any} />
+                        <FeedbackCards groups={groups as FeedbackGroup[]} />
                     )}
 
                     {groups.length > 0 && (

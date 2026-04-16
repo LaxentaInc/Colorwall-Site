@@ -1,27 +1,23 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useMemo } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { Typewriter } from "react-simple-typewriter";
 import Image from "next/image";
 import Link from "next/link";
-import { Download, FileText, MessageCircle, Monitor, Cpu, Wrench } from "lucide-react";
+import { Download, FileText, Monitor, Cpu, Wrench } from "lucide-react";
 import { ScrollArrow } from "./ScrollArrow";
 
-export const HeroSection = ({ theme }: { theme?: "dark" | "light" }) => {
+export const HeroSection = () => {
     const { scrollYProgress } = useScroll();
     const heroScale = useTransform(scrollYProgress, [0, 0.25], [1, 0.95]);
 
-    const [bgVideo, setBgVideo] = useState({ src: "/videos/myCutekoiiii.webm", type: "video/webm" });
-
-    useEffect(() => {
+    // pick a random bg video once on mount — no useEffect+setState to avoid cascading renders
+    const bgVideo = useMemo(() => {
         const r = Math.random();
-        if (r < 0.3) {
-            setBgVideo({ src: "/wallpaper_1775826051.webm", type: "video/webm" });
-        } else if (r < 0.6) {
-            setBgVideo({ src: "/Shimoe_Koharu_-_Blue_Archive.webm", type: "video/webm" });
-        }
-        // otherwise it stays as the default we initialized with
+        if (r < 0.3) return { src: "/wallpaper_1775826051.webm", type: "video/webm" };
+        if (r < 0.6) return { src: "/Shimoe_Koharu_-_Blue_Archive.webm", type: "video/webm" };
+        return { src: "/videos/myCutekoiiii.webm", type: "video/webm" };
     }, []);
 
     return (

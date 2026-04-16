@@ -23,7 +23,7 @@ export default function ColorWallLanding() {
         <div className={`relative min-h-screen select-none ${theme === "dark" ? "bg-black text-white" : "bg-white text-black"}`}>
 
             {/* ════ Hero Section ════ */}
-            <HeroSection theme={theme} />
+            <HeroSection />
 
             {/* ════ Content Sections ════ */}
             <FeaturesSection theme={theme} />
