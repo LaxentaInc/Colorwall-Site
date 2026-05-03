@@ -143,7 +143,10 @@ export const HeroSection = () => {
                         href="/download"
                         onClick={(event) => handleInternalNavigation(event, "download", "/download")}
                         aria-busy={loadingButton === "download"}
-                        style={{ backgroundImage: 'linear-gradient(90deg, #ffffff 0%, #0078d4 50%, #ffffff 100%)' }}
+                        style={{ 
+                            backgroundImage: 'linear-gradient(110deg, #ffffff 35%, #f4f9ff 45%, #8bc5f8 50%, #f4f9ff 55%, #ffffff 65%)',
+                            backgroundSize: '200% auto'
+                        }}
                         className="animate-bg-pan group inline-flex items-center gap-2 sm:gap-3 px-6 py-3 sm:px-8 sm:py-4 rounded-xl font-bold text-xs sm:text-sm tracking-wide transition-all duration-300 hover:-translate-y-0.5 text-black hover:shadow-[0_8px_30px_rgba(255,255,255,0.25)] border border-white/40"
                     >
                         {loadingButton === "download" ? (
