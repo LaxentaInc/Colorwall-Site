@@ -28,17 +28,17 @@ type HeroVideo = {
 };
 
 const HIGH_QUALITY_VIDEOS: HeroVideo[] = [
-    { src: "/videos/Shimoe_Koharu.mp4", type: "video/mp4" },
-    { src: "/videos/grass.mp4", type: "video/mp4" },
+    { src: "/videos/Shimoe_Koharu.webm", type: "video/webm" },
+    { src: "/videos/grass.webm", type: "video/webm" },
 ];
 
 const MEDIUM_QUALITY_VIDEOS: HeroVideo[] = [
-    { src: "/videos/grass.mp4", type: "video/mp4" },
+    { src: "/videos/grass.webm", type: "video/webm" },
 ];
 
 const LOW_QUALITY_VIDEOS: HeroVideo[] = [
     { src: "/videos/myCutekoiiii.webm", type: "video/webm" },
-    { src: "/videos/mycutekoii.mp4", type: "video/mp4" },
+    { src: "/videos/mycutekoii.webm", type: "video/webm" },
 ];
 
 const pickRandomVideo = (videos: HeroVideo[]) => {
