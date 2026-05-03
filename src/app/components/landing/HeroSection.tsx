@@ -70,16 +70,16 @@ const getViewportTier = () => {
         return "high" as DisplayTier;
     }
 
-    // Use inner dimensions (visible viewport) as primary indicator
-    const viewportWidth = window.innerWidth;
-    const viewportHeight = window.innerHeight;
+    // Detect device native screen resolution (not viewport size)
+    const screenWidth = window.screen.width;
+    const screenHeight = window.screen.height;
     const pixelRatio = window.devicePixelRatio || 1;
 
-    // Calculate effective resolution in CSS pixels
-    const effectiveWidth = Math.round(viewportWidth * pixelRatio);
-    const effectiveHeight = Math.round(viewportHeight * pixelRatio);
+    // Calculate effective resolution accounting for device pixel ratio
+    const effectiveWidth = Math.round(screenWidth * pixelRatio);
+    const effectiveHeight = Math.round(screenHeight * pixelRatio);
 
-    // Load low-quality for sub-1080p displays
+    // Load low-quality for sub-1080p native displays
     if (effectiveWidth < 1920 || effectiveHeight < 1080) {
         return "low";
     }
@@ -118,15 +118,15 @@ export const HeroSection = () => {
         const nav = navigator as NavigatorWithConnection;
         const connection = nav.connection;
 
-        // Resolution-aware video selection:
-        // - Sub-1080p viewports: load mycutekoii.webm (low-res, ~190KB)
-        // - 1080p+: load high-quality variants (~2.7-3.9MB)
+        // Resolution-aware video selection based on device screen resolution:
+        // - Sub-1080p devices: load mycutekoii.webm (low-res, ~190KB)
+        // - 1080p+ devices: load high-quality variants (~2.7-3.9MB)
         // - Also respects network conditions (2G/3G/save-data use low tier)
         const updateVideoQuality = () => {
             const connectionTier = pickVideoFromConnection(connection);
-            const viewportTier = getViewportTier();
+            const screenTier = getViewportTier();
 
-            setBgVideo(pickVideoForDisplay(connectionTier === "low" ? "low" : viewportTier));
+            setBgVideo(pickVideoForDisplay(connectionTier === "low" ? "low" : screenTier));
         };
 
         updateVideoQuality();
