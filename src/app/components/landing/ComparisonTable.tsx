@@ -31,31 +31,9 @@ export const ComparisonTable = ({ theme }: { theme: "dark" | "light" }) => {
                 </div>
             );
         }
-        if (val === "No" || val === "None") {
-            return (
-                <div className={`flex items-center justify-center gap-2 whitespace-nowrap ${isDark ? "text-red-400/70" : "text-red-500/80"}`}>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="shrink-0">
-                        <path d="M12 22C17.5 22 22 17.5 22 12C22 6.5 17.5 2 12 2C6.5 2 2 6.5 2 12C2 17.5 6.5 22 12 22Z" fill="currentColor" fillOpacity="0.1"/>
-                        <path d="M9.17004 14.83L14.83 9.17004M14.83 14.83L9.17004 9.17004" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
-                    <span>{val}</span>
-                </div>
-            );
-        }
-        if (val.includes("Third-party") || val.includes("Limited") || val.includes("Basic")) {
-            return (
-                <div className={`flex items-center justify-center gap-2 whitespace-nowrap ${isDark ? "text-amber-400/80" : "text-amber-600"}`}>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="shrink-0">
-                        <path d="M12 22C17.5 22 22 17.5 22 12C22 6.5 17.5 2 12 2C6.5 2 2 6.5 2 12C2 17.5 6.5 22 12 22Z" fill="currentColor" fillOpacity="0.1"/>
-                        <path d="M8 12H16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
-                    <span>{val}</span>
-                </div>
-            );
-        }
         
         // Default text
-        return <span className={`whitespace-nowrap ${isCw ? (isDark ? "text-blue-400 font-bold" : "text-blue-600 font-bold") : (isDark ? "text-white/60" : "text-black/60")}`}>{val}</span>;
+        return <span className={`whitespace-nowrap ${isCw ? (isDark ? "text-white font-bold" : "text-black font-bold") : (isDark ? "text-white/60" : "text-black/60")}`}>{val}</span>;
     };
 
     return (
@@ -91,21 +69,43 @@ export const ComparisonTable = ({ theme }: { theme: "dark" | "light" }) => {
                     className="relative"
                 >
                     <div className="w-full overflow-x-auto pb-6 -mx-4 px-4 sm:mx-0 sm:px-0">
-                        <table className="w-full min-w-[800px] border-collapse">
+                        <table className="w-full min-w-[600px] border-collapse">
                             <thead>
                                 <tr>
-                                    <th className="w-1/4 p-6 text-left" />
-                                    <th className="w-1/3 p-0 align-bottom">
-                                        <div className={`mx-0 sm:mx-2 p-8 rounded-t-2xl border-t border-x relative
-                                            ${isDark ? "bg-blue-500/10 border-blue-500/30" : "bg-blue-50 border-blue-200"}`}>
-                                            <div className="flex flex-col items-center gap-3">
-                                                <img src="/colorwall.png" alt="ColorWall" className="w-10 h-10 object-contain" />
-                                                <span className={`text-xl font-bold tracking-tight ${isDark ? "text-white" : "text-black"}`}>ColorWall</span>
+                                    <th className="p-4 sm:p-6 text-left" />
+                                    <th className="p-0 align-bottom">
+                                        <div className={`p-4 sm:p-6 rounded-t-xl border-t border-x relative
+                                            ${isDark ? "bg-white/[0.02] border-white/10" : "bg-black/[0.02] border-black/10"}`}>
+                                            <div className="flex flex-col items-center gap-2">
+                                                <img src="/colorwall.png" alt="ColorWall" className="w-8 h-8 sm:w-10 sm:h-10 object-contain" />
+                                                <span className={`text-lg sm:text-xl font-bold tracking-tight ${isDark ? "text-white" : "text-black"}`}>ColorWall</span>
                                             </div>
                                         </div>
                                     </th>
-                                    <th className={`w-1/5 p-6 align-bottom pb-8 text-center font-bold text-lg ${isDark ? "text-white/60" : "text-black/60"}`}>Wallpaper Engine</th>
-                                    <th className={`w-1/5 p-6 align-bottom pb-8 text-center font-bold text-lg ${isDark ? "text-white/60" : "text-black/60"}`}>Lively</th>
+                                    <th className={`p-4 sm:p-6 align-bottom pb-6 text-center font-bold text-base sm:text-lg ${isDark ? "text-white/60" : "text-black/60"}`}>
+                                        <div className="flex flex-col items-center gap-2">
+                                            <img 
+                                                src="https://www.google.com/s2/favicons?domain=wallpaperengine.io&sz=128" 
+                                                alt="Wallpaper Engine" 
+                                                loading="lazy" 
+                                                decoding="async"
+                                                className="w-6 h-6 sm:w-8 sm:h-8 object-contain opacity-50 grayscale hover:grayscale-0 hover:opacity-80 transition-all" 
+                                            />
+                                            <span>Wallpaper Engine</span>
+                                        </div>
+                                    </th>
+                                    <th className={`p-4 sm:p-6 align-bottom pb-6 text-center font-bold text-base sm:text-lg ${isDark ? "text-white/60" : "text-black/60"}`}>
+                                        <div className="flex flex-col items-center gap-2">
+                                            <img 
+                                                src="https://www.google.com/s2/favicons?domain=rocksdanister.com&sz=128" 
+                                                alt="Lively Wallpaper" 
+                                                loading="lazy" 
+                                                decoding="async"
+                                                className="w-6 h-6 sm:w-8 sm:h-8 object-contain opacity-50 grayscale hover:grayscale-0 hover:opacity-80 transition-all" 
+                                            />
+                                            <span>Lively</span>
+                                        </div>
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -116,11 +116,11 @@ export const ComparisonTable = ({ theme }: { theme: "dark" | "light" }) => {
                                             {feature.label}
                                         </td>
                                         <td className="p-0 border-y-0">
-                                            <div className={`mx-0 sm:mx-2 px-8 py-5 text-center transition-colors h-full flex flex-col justify-center
+                                            <div className={`px-4 sm:px-6 py-4 sm:py-5 text-center transition-colors h-full flex flex-col justify-center
                                                 ${isDark 
-                                                    ? "bg-blue-500/10 border-x border-blue-500/30 group-hover:bg-blue-500/20" 
-                                                    : "bg-blue-50 border-x border-blue-200 group-hover:bg-blue-100/50"}
-                                                ${i === features.length - 1 ? "rounded-b-2xl border-b pb-8" : "border-b border-b-blue-500/20"}`}>
+                                                    ? "bg-white/[0.02] border-x border-white/10 group-hover:bg-white/[0.04]" 
+                                                    : "bg-black/[0.02] border-x border-black/10 group-hover:bg-black/[0.04]"}
+                                                ${i === features.length - 1 ? "rounded-b-xl border-b pb-6" : "border-b border-b-white/5"}`}>
                                                 {renderValue(feature.cw, true)}
                                             </div>
                                         </td>
