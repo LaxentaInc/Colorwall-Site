@@ -7,6 +7,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Download, FileText, Monitor, Cpu, Wrench, LoaderCircle } from "lucide-react";
 import { ScrollArrow } from "./ScrollArrow";
+import { GradientHeading } from "./GradientHeading";
 
 type HeroVideo = {
     src: string;
@@ -113,7 +114,7 @@ export const HeroSection = () => {
                 </div>
 
                 <h1 className="text-xs sm:text-sm md:text-base font-mono font-semibold tracking-widest uppercase opacity-90 mb-1 text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
-                    The Ultimate <span className="text-blue-500">Wallpaper Engine</span> Alternative
+                    The Ultimate <GradientHeading text="Wallpaper Engine" theme="dark" as="span" className="inline-block px-1" /> Alternative
                 </h1>
 
                 {/* typewriter */}
@@ -142,7 +143,8 @@ export const HeroSection = () => {
                         href="/download"
                         onClick={(event) => handleInternalNavigation(event, "download", "/download")}
                         aria-busy={loadingButton === "download"}
-                        className="group inline-flex items-center gap-2 sm:gap-3 px-6 py-3 sm:px-8 sm:py-4 rounded-xl font-bold text-xs sm:text-sm tracking-wide transition-all duration-300 hover:-translate-y-0.5 bg-white text-black hover:shadow-[0_8px_30px_rgba(255,255,255,0.15)]"
+                        style={{ backgroundImage: 'linear-gradient(90deg, #ffffff 0%, #0078d4 50%, #ffffff 100%)' }}
+                        className="animate-bg-pan group inline-flex items-center gap-2 sm:gap-3 px-6 py-3 sm:px-8 sm:py-4 rounded-xl font-bold text-xs sm:text-sm tracking-wide transition-all duration-300 hover:-translate-y-0.5 text-black hover:shadow-[0_8px_30px_rgba(255,255,255,0.25)] border border-white/40"
                     >
                         {loadingButton === "download" ? (
                             <LoaderCircle className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />

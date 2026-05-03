@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Zap, Monitor, Search, HardDrive, Paintbrush, Shield, Layout, MousePointer2, Cpu } from "lucide-react";
+import { Zap, Monitor, Search, Paintbrush, Shield, Layout, MousePointer2, Cpu, Wand2 } from "lucide-react";
 import { GradientHeading } from "./GradientHeading";
 
 // -- feature data --
@@ -53,6 +53,12 @@ const features = [
         icon: Search,
         title: "Massive Workshop",
         desc: "Browse and download thousands of 4K videos, webgl scenes, and community-made .colorwall projects instantly.",
+    },
+    {
+        id: "09",
+        icon: Wand2,
+        title: "Taskbar Customization",
+        desc: "Transform your taskbar with transparent, blur, or acrylic effects, completely independent of the wallpaper engine.",
     }
 ];
 
@@ -75,9 +81,9 @@ export const FeaturesSection = ({ theme }: { theme: "dark" | "light" }) => {
                         system_capabilities
                     </p>
                     <GradientHeading
-                        text="Performance without compromise"
+                        text={"Performance\nwithout compromise"}
                         theme={theme}
-                        className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight"
+                        className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight whitespace-pre-wrap leading-[1.1]"
                     />
                 </motion.div>
 
@@ -115,7 +121,7 @@ export const FeaturesSection = ({ theme }: { theme: "dark" | "light" }) => {
                                 </div>
 
                                 <div>
-                                    <h3 className={`text-xl font-bold mb-3 tracking-wide group-hover:-translate-y-0.5 transition-transform duration-300
+                                    <h3 className={`text-xl font-mono font-bold mb-3 tracking-wide group-hover:-translate-y-0.5 transition-transform duration-300
                                         ${theme === "dark" ? "text-white" : "text-black"}`}>
                                         {f.title}
                                     </h3>
