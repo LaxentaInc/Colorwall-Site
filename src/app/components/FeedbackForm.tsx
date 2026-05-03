@@ -3,7 +3,7 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
 import {
     Send, X, ImagePlus, FileText, Loader2,
-    CheckCircle2, ChevronRight, AlertCircle, Pencil,
+    CheckCircle2, AlertCircle, Pencil,
     Monitor, Globe
 } from 'lucide-react';
 import { useTheme } from '@/app/contexts/ThemeContext';
@@ -53,75 +53,6 @@ function getUserColor(name: string, isDark: boolean) {
     return palette[hash % palette.length];
 }
 
-// ─── Username Gate ────────────────────────────────────────────────────────────
-
-function UsernameGate({ onConfirm, isDark }: { onConfirm: (name: string) => void, isDark: boolean }) {
-    const [value, setValue] = useState('');
-    const [shake, setShake]  = useState(false);
-    const inputRef = useRef<HTMLInputElement>(null);
-
-    useEffect(() => { inputRef.current?.focus(); }, []);
-
-    const confirm = () => {
-        const name = value.trim();
-        if (!name || name.length < 2) { setShake(true); setTimeout(() => setShake(false), 500); return; }
-        onConfirm(name);
-    };
-
-    return (
-        <div className="flex flex-col items-center justify-center py-6 px-2">
-            <div className="w-full max-w-sm">
-                <div className={`w-12 h-12 rounded-2xl flex items-center justify-center mb-6 mx-auto ${isDark ? 'bg-indigo-500/10 border-indigo-500/20' : 'bg-indigo-500/5 border-indigo-500/10'}`}>
-                    <Pencil className="w-5 h-5 text-indigo-500" />
-                </div>
-
-                <h2 className={`text-xl font-black tracking-tight text-center mb-1 ${isDark ? 'text-white' : 'text-zinc-900'}`}>
-                    What should we call you?
-                </h2>
-                <p className="text-[12px] text-zinc-500 text-center mb-6 font-mono">
-                    This will be saved and linked to your feedback.
-                </p>
-
-                <div className={`relative transition-all duration-150 ${shake ? 'translate-x-1' : ''}`}>
-                    <input
-                        ref={inputRef}
-                        value={value}
-                        onChange={e => setValue(e.target.value)}
-                        onKeyDown={e => e.key === 'Enter' && confirm()}
-                        maxLength={64}
-                        placeholder="e.g. xKirito99"
-                        className={`w-full rounded-xl px-4 py-3 text-sm outline-none transition-all font-mono tracking-wide ${
-                            isDark 
-                                ? 'bg-white/[0.04] border border-white/10 text-white placeholder-zinc-600 focus:border-indigo-500/50 focus:bg-white/[0.06]' 
-                                : 'bg-zinc-50 border border-zinc-200 text-zinc-900 placeholder-zinc-400 focus:border-indigo-500/50 focus:bg-zinc-100'
-                        }`}
-                    />
-                    {value.trim().length >= 2 && (
-                        <div className={`absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 rounded-full flex items-center justify-center`}
-                            style={{ background: getUserColor(value.trim(), isDark).accent + '30', border: `1px solid ${getUserColor(value.trim(), isDark).accent}40` }}>
-                            <span className="text-[9px] font-black" style={{ color: getUserColor(value.trim(), isDark).accent }}>
-                                {value.trim().charAt(0).toUpperCase()}
-                            </span>
-                        </div>
-                    )}
-                </div>
-
-                {value.trim().length > 0 && value.trim().length < 2 && (
-                    <p className={`text-[11px] font-mono mt-2 ml-1 ${isDark ? 'text-rose-400/80' : 'text-rose-500/90'}`}>At least 2 characters.</p>
-                )}
-
-                <button
-                    onClick={confirm}
-                    disabled={value.trim().length < 2}
-                    className="mt-4 w-full py-3 rounded-xl bg-indigo-500/90 hover:bg-indigo-500 disabled:opacity-30 disabled:cursor-not-allowed text-white font-bold text-sm transition-all duration-200 flex items-center justify-center gap-2 hover:-translate-y-0.5 hover:shadow-[0_8px_20px_rgba(99,102,241,0.3)]"
-                >
-                    Continue <ChevronRight className="w-4 h-4" />
-                </button>
-            </div>
-        </div>
-    );
-}
-
 // ─── Image Preview ────────────────────────────────────────────────────────────
 
 function ImagePreview({ src, onRemove, isDark }: { src: string; onRemove: () => void, isDark: boolean }) {
@@ -147,13 +78,13 @@ export interface FeedbackFormProps {
     appVersion?: string;
 }
 
-type Stage = 'username' | 'form' | 'submitting' | 'success' | 'error';
+type Stage = 'form' | 'submitting' | 'success' | 'error';
 
 export function FeedbackForm({ defaultUsername, defaultSource = 'Web', appVersion }: FeedbackFormProps) {
     const { theme } = useTheme();
     const isDark = theme === 'dark';
 
-    const [stage,    setStage]    = useState<Stage>('username');
+    const [stage,    setStage]    = useState<Stage>('form');
     const [username, setUsername] = useState('');
     const [text,     setText]     = useState('');
     const [images,   setImages]   = useState<File[]>([]);
@@ -161,16 +92,17 @@ export function FeedbackForm({ defaultUsername, defaultSource = 'Web', appVersio
     const [logFiles, setLogFiles] = useState<File[]>([]);
     const [errMsg,   setErrMsg]   = useState('');
     const [charLeft, setCharLeft] = useState(2000);
+    const [nameShake, setNameShake] = useState(false);
 
     const imageInputRef = useRef<HTMLInputElement>(null);
     const logInputRef   = useRef<HTMLInputElement>(null);
     const textareaRef   = useRef<HTMLTextAreaElement>(null);
+    const usernameInputRef = useRef<HTMLInputElement>(null);
 
     // ── On mount: restore username from localStorage or network ──
     useEffect(() => {
         if (defaultUsername) {
             setUsername(defaultUsername);
-            setStage('form');
             return;
         }
         
@@ -178,7 +110,6 @@ export function FeedbackForm({ defaultUsername, defaultSource = 'Web', appVersio
             const saved = localStorage.getItem('cw_username');
             if (saved) { 
                 setUsername(saved); 
-                setStage('form'); 
                 return; 
             }
 
@@ -189,7 +120,6 @@ export function FeedbackForm({ defaultUsername, defaultSource = 'Web', appVersio
                 if (data.username && data.username !== 'Anonymous User' && data.username !== 'Anonymous') {
                     setUsername(data.username);
                     localStorage.setItem('cw_username', data.username);
-                    setStage('form');
                 }
             } catch (err) {
                 // Ignore network errors
@@ -199,15 +129,8 @@ export function FeedbackForm({ defaultUsername, defaultSource = 'Web', appVersio
         fetchIdentity();
     }, [defaultUsername]);
 
-    const confirmUsername = useCallback((name: string) => {
-        setUsername(name);
-        localStorage.setItem('cw_username', name);
-        setStage('form');
-        fetch('/api/identify', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username: name }),
-        }).catch(() => {/* ignore */});
+    useEffect(() => {
+        usernameInputRef.current?.focus();
     }, []);
 
     const processImage = (file: File): Promise<{ file: File, preview: string }> => {
@@ -287,7 +210,23 @@ export function FeedbackForm({ defaultUsername, defaultSource = 'Web', appVersio
         setCharLeft(2000 - v.length);
     };
 
+    const handleUsernameChange = (value: string) => {
+        setUsername(value);
+        if (value.trim().length >= 2) {
+            localStorage.setItem('cw_username', value.trim());
+        }
+    };
+
     const handleSubmit = async () => {
+        const trimmedUsername = username.trim();
+        if (trimmedUsername.length < 2) {
+            setErrMsg('Add your name before sending feedback.');
+            setNameShake(true);
+            setTimeout(() => setNameShake(false), 500);
+            usernameInputRef.current?.focus();
+            return;
+        }
+
         if (!text.trim() && images.length === 0 && logFiles.length === 0) {
             setErrMsg('Write something, attach an image, or upload a log.');
             return;
@@ -295,8 +234,15 @@ export function FeedbackForm({ defaultUsername, defaultSource = 'Web', appVersio
         setStage('submitting');
         setErrMsg('');
 
+        localStorage.setItem('cw_username', trimmedUsername);
+        fetch('/api/identify', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username: trimmedUsername }),
+        }).catch(() => {/* ignore */});
+
         const fd = new FormData();
-        fd.append('username', username);
+        fd.append('username', trimmedUsername);
         fd.append('text',     text.trim());
         fd.append('source',   defaultSource);
         if (appVersion) fd.append('appVersion', appVersion);
@@ -326,153 +272,125 @@ export function FeedbackForm({ defaultUsername, defaultSource = 'Web', appVersio
         }
     };
 
-    const color = username ? getUserColor(username, isDark) : null;
+    const color = getUserColor(username.trim() || 'Anonymous', isDark);
 
     // ── Render ────────────────────────────────────────────────────────────────
     return (
-        <div className={`w-full rounded-2xl border overflow-hidden ${
-            isDark ? 'border-white/8 bg-[#0d0d0f]/90 shadow-none' : 'border-zinc-200 bg-white/90 shadow-sm'
-        }`}>
+        <>
+            {(stage === 'form' || stage === 'submitting' || stage === 'error') && (
+                <div className={`w-full rounded-2xl border overflow-hidden ${isDark ? 'border-white/8 bg-white/[0.02]' : 'border-zinc-100 bg-white'}`} style={{
+                    boxShadow: isDark 
+                        ? '0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 60px -10px rgba(99, 102, 241, 0.15)'
+                        : '0 25px 50px -12px rgba(0, 0, 0, 0.1)'
+                }}>
+                    <div className={`px-4 py-3 border-b ${isDark ? 'border-white/6' : 'border-zinc-100'}`}>
+                        <h3 className={`text-sm font-bold ${isDark ? 'text-zinc-200' : 'text-zinc-600'}`}>Feedback</h3>
+                    </div>
 
-            {stage === 'username' && (
-                <div className="p-6">
-                    <UsernameGate onConfirm={confirmUsername} isDark={isDark} />
+                    <div className="px-4 py-4 space-y-4">
+                        <div>
+                            <p className={`text-[11px] font-mono uppercase tracking-[0.18em] ${isDark ? 'text-zinc-500' : 'text-zinc-400'}`}>Name</p>
+                            <input
+                                ref={usernameInputRef}
+                                value={username}
+                                onChange={e => handleUsernameChange(e.target.value)}
+                                maxLength={64}
+                                placeholder="e.g. xKirito99"
+                                className={`mt-2 w-full rounded-xl px-4 py-3 text-base outline-none transition-all font-mono tracking-wide ${
+                                    isDark
+                                        ? 'bg-white/[0.04] border border-white/10 text-white placeholder-zinc-600 focus:border-indigo-500/50 focus:bg-white/[0.06]'
+                                        : 'bg-zinc-50 border border-zinc-200 text-zinc-900 placeholder-zinc-400 focus:border-indigo-500/50 focus:bg-zinc-100'
+                                }`}
+                            />
+                        </div>
+
+                        <div>
+                            <p className={`text-[11px] font-mono uppercase tracking-[0.18em] ${isDark ? 'text-zinc-500' : 'text-zinc-400'}`}>Your feedback</p>
+                            <textarea
+                                ref={textareaRef}
+                                value={text}
+                                onChange={e => handleTextChange(e.target.value)}
+                                maxLength={2000}
+                                rows={12}
+                                placeholder="Report a bug, request a feature, or just say something…"
+                                className={`mt-2 w-full h-72 rounded-xl px-4 py-4 text-[13.5px] resize-none outline-none transition-all leading-relaxed font-[450] ${
+                                    isDark
+                                        ? 'bg-white/[0.04] border border-white/10 text-zinc-300 placeholder-zinc-600 focus:border-indigo-500/50 focus:bg-white/[0.06]'
+                                        : 'bg-zinc-50 border border-zinc-200 text-zinc-700 placeholder-zinc-400 focus:border-indigo-500/50 focus:bg-zinc-100'
+                                }`}
+                                style={{ fontFamily: 'inherit' }}
+                            />
+                        </div>
+
+                        {/* Image previews */}
+                        {previews.length > 0 && (
+                            <div className="px-4 pb-3 flex gap-2 flex-wrap">
+                                {previews.map((src, i) => (
+                                    <ImagePreview key={i} src={src} isDark={isDark} onRemove={() => removeImage(i)} />
+                                ))}
+                            </div>
+                        )}
+
+                        {/* Log file indicator */}
+                        {logFiles.length > 0 && (
+                            <div className="px-4 pb-3 flex flex-col gap-2">
+                                {logFiles.map((file, idx) => (
+                                    <div key={idx} className={`flex items-center gap-2 px-3 py-2 rounded-lg border ${
+                                        isDark ? 'bg-white/[0.03] border-white/8' : 'bg-zinc-50 border-zinc-200'
+                                    }`}>
+                                        <FileText className="w-3.5 h-3.5 text-zinc-500" />
+                                        <span className="text-[11px] font-mono text-zinc-500 flex-1 truncate">{file.name}</span>
+                                        <button onClick={() => removeLog(idx)}>
+                                            <X className="w-3.5 h-3.5 text-zinc-500 hover:text-zinc-400 transition-colors" />
+                                        </button>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+
+                        {/* Error */}
+                        {errMsg && (
+                            <div className={`mx-4 mb-3 flex items-center gap-2 px-3 py-2.5 rounded-lg border ${
+                                isDark ? 'bg-rose-500/8 border-rose-500/20' : 'bg-rose-50 border-rose-200'
+                            }`}>
+                                <AlertCircle className={`w-3.5 h-3.5 flex-shrink-0 ${isDark ? 'text-rose-400' : 'text-rose-500'}`} />
+                                <p className={`text-[11px] font-mono ${isDark ? 'text-rose-400' : 'text-rose-500'}`}>{errMsg}</p>
+                            </div>
+                        )}
+
+                        <div className={`px-4 py-3 border-t flex items-center justify-between ${isDark ? 'border-white/6' : 'border-zinc-100'}`}>
+                            <div className="flex items-center gap-3">
+                                <button
+                                    onClick={() => imageInputRef.current?.click()}
+                                    className={`p-2 rounded-lg ${isDark ? 'text-zinc-500 hover:text-zinc-300 hover:bg-white/5' : 'text-zinc-500 hover:text-zinc-800 hover:bg-zinc-100'}`}
+                                    title="Attach images (max 2)"
+                                >
+                                    <ImagePlus className="w-5 h-5" />
+                                </button>
+                                <button
+                                    onClick={() => logInputRef.current?.click()}
+                                    className={`p-2 rounded-lg ${isDark ? 'text-zinc-500 hover:text-zinc-300 hover:bg-white/5' : 'text-zinc-500 hover:text-zinc-800 hover:bg-zinc-100'}`}
+                                    title="Attach logs (max 5)"
+                                >
+                                    <FileText className="w-5 h-5" />
+                                </button>
+                            </div>
+
+                            <div className="flex items-center gap-4">
+                                <span className={`text-[12px] font-mono ${isDark ? 'text-zinc-400' : 'text-zinc-500'}`}>{charLeft}</span>
+                                <button
+                                    onClick={handleSubmit}
+                                    disabled={stage === 'submitting' || (!text.trim() && images.length === 0 && logFiles.length === 0)}
+                                    className={`flex items-center gap-2 px-5 py-2 rounded-full bg-indigo-500/90 text-white font-bold text-sm transition-all duration-200 disabled:opacity-40`}
+                                >
+                                    <Send className="w-4 h-4" />
+                                    Send
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            )}
-
-            {(stage === 'form' || stage === 'submitting' || stage === 'error') && color && (
-                <>
-                    {/* Header */}
-                    <div className={`flex items-center justify-between px-5 py-4 border-b ${isDark ? 'border-white/6' : 'border-zinc-100'}`}>
-                        <div className="flex items-center gap-3">
-                            <div className={`w-8 h-8 rounded-xl bg-gradient-to-br ${color.bg} border ${color.border} flex items-center justify-center`}>
-                                <span className={`text-[11px] font-black ${color.text}`}>
-                                    {username.charAt(0).toUpperCase()}
-                                </span>
-                            </div>
-                            <div>
-                                <span className={`text-[13px] font-bold ${isDark ? 'text-white' : 'text-zinc-900'}`}>{username}</span>
-                                <div className="flex items-center gap-1 mt-0.5">
-                                    {defaultSource === 'App'
-                                        ? <Monitor className="w-2.5 h-2.5 text-blue-500" />
-                                        : <Globe    className="w-2.5 h-2.5 text-emerald-500" />}
-                                    <span className={`text-[10px] font-mono ${defaultSource === 'App' ? (isDark ? 'text-blue-400/70' : 'text-blue-600/70') : (isDark ? 'text-emerald-400/70' : 'text-emerald-600/70')}`}>
-                                        {defaultSource === 'App' ? 'Desktop App' : 'Web'}
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Text area */}
-                    <div className="px-5 pt-4 pb-2">
-                        <textarea
-                            ref={textareaRef}
-                            value={text}
-                            onChange={e => handleTextChange(e.target.value)}
-                            maxLength={2000}
-                            rows={4}
-                            placeholder="Report a bug, request a feature, or just say something…"
-                            className={`w-full bg-transparent text-[13.5px] resize-none outline-none leading-relaxed font-[450] ${
-                                isDark ? 'text-zinc-300 placeholder-zinc-600' : 'text-zinc-700 placeholder-zinc-400'
-                            }`}
-                            style={{ fontFamily: 'inherit' }}
-                        />
-                    </div>
-
-                    {/* Image previews */}
-                    {previews.length > 0 && (
-                        <div className="px-5 pb-3 flex gap-2 flex-wrap">
-                            {previews.map((src, i) => (
-                                <ImagePreview key={i} src={src} isDark={isDark} onRemove={() => removeImage(i)} />
-                            ))}
-                        </div>
-                    )}
-
-                    {/* Log file indicator */}
-                    {logFiles.length > 0 && (
-                        <div className="px-5 pb-3 flex flex-col gap-2">
-                            {logFiles.map((file, idx) => (
-                                <div key={idx} className={`flex items-center gap-2 px-3 py-2 rounded-lg border ${
-                                    isDark ? 'bg-white/[0.03] border-white/8' : 'bg-zinc-50 border-zinc-200'
-                                }`}>
-                                    <FileText className="w-3.5 h-3.5 text-zinc-500" />
-                                    <span className="text-[11px] font-mono text-zinc-500 flex-1 truncate">{file.name}</span>
-                                    <button onClick={() => removeLog(idx)}>
-                                        <X className="w-3.5 h-3.5 text-zinc-500 hover:text-zinc-400 transition-colors" />
-                                    </button>
-                                </div>
-                            ))}
-                        </div>
-                    )}
-
-                    {/* Error */}
-                    {errMsg && (
-                        <div className={`mx-5 mb-3 flex items-center gap-2 px-3 py-2.5 rounded-lg border ${
-                            isDark ? 'bg-rose-500/8 border-rose-500/20' : 'bg-rose-50 border-rose-200'
-                        }`}>
-                            <AlertCircle className={`w-3.5 h-3.5 flex-shrink-0 ${isDark ? 'text-rose-400' : 'text-rose-500'}`} />
-                            <p className={`text-[11px] font-mono ${isDark ? 'text-rose-400' : 'text-rose-500'}`}>{errMsg}</p>
-                        </div>
-                    )}
-
-                    {/* Footer toolbar */}
-                    <div className={`flex items-center justify-between px-5 py-3 border-t ${isDark ? 'border-white/6' : 'border-zinc-100'}`}>
-                        <div className="flex items-center gap-1">
-                            {/* Image attach */}
-                            <button
-                                onClick={() => imageInputRef.current?.click()}
-                                disabled={images.length >= 2}
-                                title="Attach images (max 2)"
-                                className={`p-2 rounded-lg disabled:opacity-30 disabled:cursor-not-allowed transition-all ${
-                                    isDark ? 'text-zinc-500 hover:text-zinc-300 hover:bg-white/5' : 'text-zinc-500 hover:text-zinc-800 hover:bg-zinc-100'
-                                }`}
-                            >
-                                <ImagePlus className="w-4 h-4" />
-                            </button>
-                            <input ref={imageInputRef} type="file" accept="image/jpeg,image/png,image/webp,image/gif" multiple hidden onChange={e => addImages(e.target.files)} />
-
-                            {/* Log attach */}
-                            <button
-                                onClick={() => logInputRef.current?.click()}
-                                disabled={logFiles.length >= 5}
-                                title="Attach log files (max 5)"
-                                className={`p-2 rounded-lg disabled:opacity-30 disabled:cursor-not-allowed transition-all ${
-                                    isDark ? 'text-zinc-500 hover:text-zinc-300 hover:bg-white/5' : 'text-zinc-500 hover:text-zinc-800 hover:bg-zinc-100'
-                                }`}
-                            >
-                                <FileText className="w-4 h-4" />
-                            </button>
-                            <input ref={logInputRef} type="file" accept=".log,.txt" multiple hidden onChange={e => addLogs(e.target.files)} />
-
-                            {logFiles.length > 0 && (
-                                <span className={`text-[10px] font-mono ml-1 ${isDark ? 'text-zinc-500' : 'text-zinc-500'}`}>
-                                    {logFiles.length}/5 Logs
-                                </span>
-                            )}
-
-                            {images.length > 0 && (
-                                <span className={`text-[10px] font-mono ml-1 ${isDark ? 'text-zinc-500' : 'text-zinc-500'}`}>{images.length}/2</span>
-                            )}
-                        </div>
-
-                        <div className="flex items-center gap-3">
-                            <span className={`text-[10px] font-mono tabular-nums transition-colors ${charLeft < 100 ? 'text-amber-500' : charLeft < 20 ? 'text-rose-500' : 'text-zinc-500'}`}>
-                                {charLeft}
-                            </span>
-                            <button
-                                onClick={handleSubmit}
-                                disabled={stage === 'submitting' || (!text.trim() && images.length === 0 && logFiles.length === 0)}
-                                className="flex items-center gap-2 px-4 py-2 rounded-xl bg-indigo-500/90 hover:bg-indigo-500 disabled:opacity-30 disabled:cursor-not-allowed text-white font-bold text-[12px] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_6px_16px_rgba(99,102,241,0.35)]"
-                            >
-                                {stage === 'submitting'
-                                    ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Sending…</>
-                                    : <><Send className="w-3.5 h-3.5" /> Send</>}
-                            </button>
-                        </div>
-                    </div>
-                </>
-            )}
+                )}
 
             {/* ── Success ── */}
             {stage === 'success' && (
@@ -490,6 +408,6 @@ export function FeedbackForm({ defaultUsername, defaultSource = 'Web', appVersio
                     </button>
                 </div>
             )}
-        </div>
+        </>
     );
 }

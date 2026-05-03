@@ -124,8 +124,8 @@ export function FeedbackClientDisplay({ feedbacks }: FeedbackClientDisplayProps)
                         <div className="h-px flex-1 max-w-[80px] bg-gradient-to-r from-indigo-500/40 to-transparent" />
                     </div>
 
-                    <div className="flex flex-col xl:flex-row xl:items-end justify-between gap-10">
-                        <div>
+                    <div className="flex flex-col xl:flex-row xl:items-start justify-between gap-10">
+                        <div className="flex-1">
                             <h1 className={`text-[clamp(3rem,8vw,7rem)] font-black tracking-[-0.04em] leading-[0.9] mb-0 ${isDark ? 'text-white' : 'text-zinc-900'}`}>
                                 What do
                             </h1>
@@ -149,7 +149,7 @@ export function FeedbackClientDisplay({ feedbacks }: FeedbackClientDisplayProps)
                         </div>
 
                         {/* Moved the Feedback Form into the hero section, replacing the little stats blocks */}
-                        <div className="w-full xl:max-w-md xl:flex-shrink-0">
+                        <div className="w-full xl:w-xl xl:flex-shrink-0">
                             <FeedbackForm defaultSource="Web" />
                         </div>
                     </div>
