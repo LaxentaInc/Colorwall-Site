@@ -6,7 +6,7 @@ export const HomeShowcase = ({ theme }: { theme: "dark" | "light" }) => {
     return (
         <section className="py-16 px-4 sm:px-8">
             <div className="max-w-7xl mx-auto">
-                <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl shadow-black/50 border border-white/5 bg-black/5">
+                <div className="relative rounded-2xl sm:rounded-[2rem] overflow-hidden shadow-2xl shadow-black/50 border border-white/5 bg-black/5">
                     <Image
                         src="/HOME.webp"
                         alt="colorwall full interface"

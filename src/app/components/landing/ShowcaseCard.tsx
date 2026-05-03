@@ -108,18 +108,18 @@ export const ShowcaseCard = ({
                         <div className={`relative w-full group
                             ${layout === "grid" ? "aspect-video" : (imageFit === "contain" ? "" : "aspect-[21/9] sm:aspect-[21/9]")}`}
                         >
-                            {displayImages.map((src, i) => {
+                                {displayImages.map((src, i) => {
                                 const active = i === currentImgIndex;
-                                const isRelative = layout !== "grid" && imageFit === "contain" && i === 0;
+                                const isRelative = layout !== "grid" && imageFit === "contain" && active;
 
                                 return (
                                     <div
                                         key={src}
                                         className={`${isRelative ? 'relative' : 'absolute inset-0'} w-full ${isRelative ? 'h-auto' : 'h-full'} transition-all duration-1000 ease-in-out
-                                            ${active ? "opacity-100 translate-y-0 scale-100" : "opacity-0 translate-y-4 scale-95"}`}
+                                            ${active ? "opacity-100 translate-y-0 scale-100 z-10" : "opacity-0 translate-y-4 scale-95 z-0"}`}
                                     >
                                         <div className={`relative w-full ${isRelative ? 'h-auto' : 'h-full'} 
-                                            ${imageFit === "contain" ? "" : `overflow-hidden rounded-xl sm:rounded-2xl ${theme === "dark" ? "bg-white/5" : "bg-black/5"}`}`}>
+                                            ${imageFit === "contain" ? "" : `overflow-hidden rounded-2xl sm:rounded-[2rem] ${theme === "dark" ? "bg-white/5" : "bg-black/5"}`}`}>
 
                                             {/* For 'contain' mode (customization screenshots), we still want them to look good */}
                                             {imageFit === "contain" ? (
