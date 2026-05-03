@@ -7,7 +7,6 @@ import { FeaturesSection } from "@/app/components/landing/FeaturesSection";
 import { ShowcaseCard } from "@/app/components/landing/ShowcaseCard";
 import { HomeShowcase } from "@/app/components/landing/HomeShowcase";
 import { ComparisonTable } from "@/app/components/landing/ComparisonTable";
-import { PlannedOpenSource } from "@/app/components/landing/PlannedOpenSource";
 import { SecurityReport } from "@/app/components/SecurityReport";
 import { FAQSection } from "@/app/components/landing/FAQSection";
 import { BottomCTA } from "@/app/components/landing/BottomCTA";
@@ -27,6 +26,20 @@ export default function ColorWallLanding() {
 
             {/* ════ Content Sections ════ */}
             <FeaturesSection theme={theme} />
+
+            <ComparisonTable theme={theme} />
+
+            <SecurityReport theme={theme} className="py-24" />
+
+            <p className="text-center -mt-8 mb-16 px-4">
+                <span className={`${theme === "dark" ? "text-white/70" : "text-black/70"} block text-2xl font-bold`}>
+                    Seems too good to be true?
+                </span>
+
+                <span className={`${theme === "dark" ? "text-violet-300/80" : "text-violet-600/80"} block mt-2 text-lg font-semibold italic`}>
+                    It is :D That's why I built it
+                </span>
+            </p>
 
             <ShowcaseCard
                 title="STORE"
@@ -78,13 +91,8 @@ export default function ColorWallLanding() {
                 layout="vertical"
                 imageFit="contain"
             />
+
             <HomeShowcase theme={theme} />
-
-            <ComparisonTable theme={theme} />
-
-            <SecurityReport theme={theme} className="py-24" />
-
-            <PlannedOpenSource theme={theme} />
 
             <FAQSection theme={theme} />
 

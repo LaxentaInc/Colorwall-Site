@@ -22,7 +22,7 @@ export const ComparisonTable = ({ theme }: { theme: "dark" | "light" }) => {
                         theme={theme}
                         className="text-3xl sm:text-4xl font-black"
                     />
-                    <h1 className="text-base sm:text-lg font-bold opacity-60 mt-2"> Single snapshot values on i3-4th gen; Intel(R) Graphics HD 4600</h1>
+                    <p className="text-base sm:text-lg font-bold opacity-60 mt-2">Single snapshot values on i3-4th gen; Intel(R) Graphics HD 4600</p>
                 </motion.div>
 
                 <motion.div

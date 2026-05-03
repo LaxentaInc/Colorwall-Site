@@ -1,10 +1,10 @@
 "use client";
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState, useCallback, type MouseEvent } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTheme } from "@/app/contexts/ThemeContext";
-import { Github, MessageCircle, MessageSquare, FileText, Menu, X, Home, Download } from "lucide-react";
+import { MessageCircle, MessageSquare, FileText, Menu, X, Home, Download, LoaderCircle } from "lucide-react";
 const SunIcon = () => (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
         <circle cx="12" cy="12" r="4" />
@@ -59,10 +59,12 @@ const SoundOffIcon = () => (
 export const Navbar = () => {
     const { theme, toggleTheme } = useTheme();
     const pathname = usePathname();
+    const router = useRouter();
     const isDark = theme === "dark";
     const [isVisible, setIsVisible] = useState(true);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isSoundOn, setIsSoundOn] = useState(false);
+    const [loadingNavItem, setLoadingNavItem] = useState<string | null>(null);
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const lastScrollY = useRef(0);
     const isHovered = useRef(false);
@@ -87,6 +89,11 @@ export const Navbar = () => {
         }
         setIsSoundOn(prev => !prev);
     }, [isSoundOn]);
+
+    useEffect(() => {
+        setLoadingNavItem(null);
+    }, [pathname]);
+
     useEffect(() => {
         const handleScroll = () => {
             const currentScrollY = window.scrollY;
@@ -110,6 +117,34 @@ export const Navbar = () => {
         { name: "Feedback", href: "/feedback", icon: MessageSquare },
         { name: "Discussions", href: "https://github.com/orgs/Colorwall/discussions", icon: MessageCircle },
     ];
+
+    const handleNavClick = (
+        event: MouseEvent<HTMLAnchorElement>,
+        key: string,
+        href: string,
+        isExternal: boolean,
+        closeMobileMenu?: boolean
+    ) => {
+        setLoadingNavItem(key);
+
+        if (closeMobileMenu) {
+            setIsMobileMenuOpen(false);
+        }
+
+        if (isExternal) {
+            window.setTimeout(() => {
+                setLoadingNavItem(null);
+            }, 1200);
+            return;
+        }
+
+        event.preventDefault();
+
+        // Ensure users see immediate feedback before route transition.
+        window.setTimeout(() => {
+            router.push(href);
+        }, 120);
+    };
     const base = isDark
         ? "bg-[#0a0a0a]/50 border-white/10 text-white/80"
         : "bg-white/50 border-black/10 text-black/80";
@@ -147,13 +182,19 @@ export const Navbar = () => {
                                     href={link.href}
                                     target={isExternal ? "_blank" : undefined}
                                     rel={isExternal ? "noopener noreferrer" : undefined}
-                                    className={`px-3 py-2 rounded-xl text-[11px] sm:text-xs font-mono font-semibold tracking-widest uppercase transition-all duration-200 flex items-center gap-2 drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]
+                                    onClick={(event) => handleNavClick(event, `desktop-${link.name}`, link.href, isExternal)}
+                                    aria-busy={loadingNavItem === `desktop-${link.name}`}
+                                    className={`px-3 py-2 rounded-xl text-[11px] sm:text-xs font-mono font-semibold tracking-widest uppercase transition-all duration-200 flex items-center gap-2
                     ${isActive
                                             ? isDark ? "bg-white/10 text-white" : "bg-black/6 text-black"
                                             : isDark ? "text-white/55 hover:text-white hover:bg-white/7" : "text-black/50 hover:text-black hover:bg-black/4"
                                         }`}
                                 >
-                                    <link.icon size={16} strokeWidth={1.8} />
+                                    {loadingNavItem === `desktop-${link.name}` ? (
+                                        <LoaderCircle size={16} strokeWidth={1.8} className="animate-spin" />
+                                    ) : (
+                                        <link.icon size={16} strokeWidth={1.8} />
+                                    )}
                                     {link.name}
                                 </Link>
                             );
@@ -224,14 +265,19 @@ export const Navbar = () => {
                                             href={link.href}
                                             target={isExternal ? "_blank" : undefined}
                                             rel={isExternal ? "noopener noreferrer" : undefined}
-                                            onClick={() => setIsMobileMenuOpen(false)}
-                                            className={`px-3 py-2 rounded-xl text-[11px] sm:text-xs font-mono font-semibold tracking-widest uppercase transition-all duration-200 flex items-center gap-2.5 drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]
+                                            onClick={(event) => handleNavClick(event, `mobile-${link.name}`, link.href, isExternal, true)}
+                                            aria-busy={loadingNavItem === `mobile-${link.name}`}
+                                            className={`px-3 py-2 rounded-xl text-[11px] sm:text-xs font-mono font-semibold tracking-widest uppercase transition-all duration-200 flex items-center gap-2.5
                         ${isActive
                                                     ? isDark ? "bg-white/10 text-white" : "bg-black/6 text-black"
                                                     : isDark ? "text-white/55 hover:text-white hover:bg-white/7" : "text-black/50 hover:text-black hover:bg-black/4"
                                                 }`}
                                         >
-                                            <link.icon size={16} strokeWidth={1.8} />
+                                            {loadingNavItem === `mobile-${link.name}` ? (
+                                                <LoaderCircle size={16} strokeWidth={1.8} className="animate-spin" />
+                                            ) : (
+                                                <link.icon size={16} strokeWidth={1.8} />
+                                            )}
                                             {link.name}
                                         </Link>
                                     );

@@ -10,11 +10,9 @@ type ThemeContextType = {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined)
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [mounted, setMounted] = useState(false)
   const [theme, setTheme] = useState<'dark' | 'light'>('dark')
   
   useEffect(() => {
-    setMounted(true)
     const savedTheme = localStorage.getItem('servyl-theme') as 'dark' | 'light' | null
     if (savedTheme) {
       setTheme(savedTheme)
@@ -27,22 +25,15 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   // Apply theme to document
   useEffect(() => {
-    if (mounted) {
-      document.documentElement.classList.remove('dark', 'light')
-      document.documentElement.classList.add(theme)
-      document.documentElement.style.colorScheme = theme
-    }
-  }, [theme, mounted])
+    document.documentElement.classList.remove('dark', 'light')
+    document.documentElement.classList.add(theme)
+    document.documentElement.style.colorScheme = theme
+  }, [theme])
   
   const toggleTheme = () => {
     const newTheme = theme === 'dark' ? 'light' : 'dark'
     setTheme(newTheme)
     localStorage.setItem('servyl-theme', newTheme)
-  }
-
-  // prevent hydration mismatch by not rendering until mounted
-  if (!mounted) {
-    return null
   }
 
   return (

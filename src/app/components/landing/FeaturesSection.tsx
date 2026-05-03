@@ -135,17 +135,6 @@ export const FeaturesSection = ({ theme }: { theme: "dark" | "light" }) => {
                 </div>
             </div>
 
-            <p className="text-center mt-18">
-                <span className={`${theme === "dark" ? "text-white/70" : "text-black/70"} block text-2xl font-bold`}>
-                    Seems too good to be true?
-                </span>
-
-                <span className={`${theme === "dark" ? "text-violet-300/80" : "text-violet-600/80"} block mt-2 text-lg font-semibold italic`}>
-                    It is :D That's why I built it
-                </span>
-            </p>
-
-
         </section>
     );
 }
