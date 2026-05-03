@@ -8,60 +8,29 @@ import { useRouter } from "next/navigation";
 import { Download, FileText, Monitor, Cpu, Wrench, LoaderCircle } from "lucide-react";
 import { ScrollArrow } from "./ScrollArrow";
 
-type EffectiveType = "slow-2g" | "2g" | "3g" | "4g";
-
-interface NetworkInformation extends EventTarget {
-    effectiveType?: EffectiveType;
-    downlink?: number;
-    saveData?: boolean;
-    addEventListener(type: "change", listener: () => void): void;
-    removeEventListener(type: "change", listener: () => void): void;
-}
-
-interface NavigatorWithConnection extends Navigator {
-    connection?: NetworkInformation;
-}
-
 type HeroVideo = {
     src: string;
     type: string;
+    poster: string;
 };
 
-const HIGH_QUALITY_VIDEOS: HeroVideo[] = [
-    { src: "/videos/Shimoe_Koharu.webm", type: "video/webm" },
-    { src: "/videos/Konoe_Mina_Rainy_Day_In_The_City_Blue_Archive_Live_Wallpaper.webm", type: "video/webm" },
-    { src: "/videos/Nakamasa_Ichika_With_Balloon_Blue_Archive_Live_Wallpaper.webm", type: "video/webm" },
-    { src: "/videos/Plana___Arona__Blue_Archive_.webm", type: "video/webm" },
+const HERO_VIDEOS: HeroVideo[] = [
+    { src: "/videos/Shimoe_Koharu.webm", type: "video/webm", poster: "/videos/posters/Shimoe_Koharu.webp" },
+    { src: "/videos/Konoe_Mina_Rainy_Day_In_The_City_Blue_Archive_Live_Wallpaper.webm", type: "video/webm", poster: "/videos/posters/Konoe_Mina_Rainy_Day_In_The_City_Blue_Archive_Live_Wallpaper.webp" },
+    { src: "/videos/Nakamasa_Ichika_With_Balloon_Blue_Archive_Live_Wallpaper.webm", type: "video/webm", poster: "/videos/posters/Nakamasa_Ichika_With_Balloon_Blue_Archive_Live_Wallpaper.webp" },
+    { src: "/videos/Plana___Arona__Blue_Archive_.webm", type: "video/webm", poster: "/videos/posters/Plana___Arona__Blue_Archive_.webp" },
+    { src: "/videos/mycutekoii.webm", type: "video/webm", poster: "/videos/posters/mycutekoii.webp" },
 ];
 
-const LOW_QUALITY_VIDEOS: HeroVideo[] = [
-    { src: "/videos/mycutekoii.webm", type: "video/webm" },
-];
-
-const pickRandomVideo = (videos: HeroVideo[]) => {
+const pickRandomVideo = () => {
     const r = Math.random();
-    return videos[Math.floor(r * videos.length)];
-};
-
-const pickVideoFromConnection = (connection?: NetworkInformation) => {
-    if (connection?.saveData) {
-        return pickRandomVideo(LOW_QUALITY_VIDEOS);
-    }
-
-    if (connection?.effectiveType === "slow-2g" || connection?.effectiveType === "2g" || connection?.effectiveType === "3g") {
-        return pickRandomVideo(LOW_QUALITY_VIDEOS);
-    }
-
-    if (typeof connection?.downlink === "number" && connection.downlink <= 1.5) {
-        return pickRandomVideo(LOW_QUALITY_VIDEOS);
-    }
-
-    return pickRandomVideo(HIGH_QUALITY_VIDEOS);
+    return HERO_VIDEOS[Math.floor(r * HERO_VIDEOS.length)];
 };
 
 export const HeroSection = () => {
     const router = useRouter();
-    const [bgVideo, setBgVideo] = useState<HeroVideo>({ src: "/videos/Shimoe_Koharu.webm", type: "video/webm" });
+    const [bgVideo, setBgVideo] = useState<HeroVideo>(HERO_VIDEOS[0]);
+    const [isVideoLoaded, setIsVideoLoaded] = useState(false);
     const [loadingButton, setLoadingButton] = useState<"download" | "changelog" | "discord" | null>(null);
 
     const handleInternalNavigation = (
@@ -78,33 +47,9 @@ export const HeroSection = () => {
         }, 120);
     };
 
-    const videoPreload = useMemo<"none" | "metadata" | "auto">(() => {
-        if (bgVideo.src.endsWith(".webm")) {
-            return "metadata";
-        }
-
-        if (bgVideo.src.includes("Shimoe_Koharu")) {
-            return "auto";
-        }
-
-        return "metadata";
-    }, [bgVideo.src]);
-
     useEffect(() => {
-        const nav = navigator as NavigatorWithConnection;
-        const connection = nav.connection;
-
-        const updateVideoQuality = () => {
-            setBgVideo(pickVideoFromConnection(connection));
-        };
-
-        updateVideoQuality();
-
-        connection?.addEventListener("change", updateVideoQuality);
-
-        return () => {
-            connection?.removeEventListener("change", updateVideoQuality);
-        };
+        setIsVideoLoaded(false);
+        setBgVideo(pickRandomVideo());
     }, []);
 
     return (
@@ -113,16 +58,24 @@ export const HeroSection = () => {
         >
             {/* video bg */}
             <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+                <Image
+                    src={bgVideo.poster}
+                    alt="Background Poster"
+                    fill
+                    priority
+                    className={`object-cover transition-opacity duration-1000 ease-in-out ${isVideoLoaded ? "opacity-0" : "opacity-65"}`}
+                />
                 <video
                     key={bgVideo.src}
                     autoPlay
                     muted
                     loop
                     playsInline
-                    preload={videoPreload}
+                    preload="auto"
                     // @ts-expect-error React types don't officially support fetchPriority natively on video elements yet in this TS version
                     fetchPriority="high"
-                    className="w-full h-full object-cover opacity-65"
+                    onCanPlay={() => setIsVideoLoaded(true)}
+                    className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out ${isVideoLoaded ? "opacity-65" : "opacity-0"}`}
                 >
                     <source src={bgVideo.src} type={bgVideo.type} />
                 </video>
