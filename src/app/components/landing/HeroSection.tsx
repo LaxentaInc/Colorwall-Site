@@ -121,17 +121,18 @@ export const HeroSection = () => {
                 <div className="text-xs sm:text-sm md:text-base lg:text-lg font-mono text-white/90 font-medium drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]">
                     <Typewriter
                         words={[
-                            "< The next-generation Wallpaper Engine alternative />",
-                            "< Built in Rust + Tauri · Ultra-lightweight · Hardware Accelerated />",
-                            "< 8K Video · Interactive HTML5 · Advanced D3D11 Shader Effects />",
-                            "< Desktop Widgets · Taskbar Customization · Audio Reactive />",
-                            "< 100% Free · No limits, no subscriptions, just pure customization />",
+                            "< Your Desktop Called, it wants personality! >",
+                            "< A Wallpaper Engine built for performance and You!>",
+                            "< Built in Rust + Tauri · DirectX 11/IMF/MPV/WEB2 · Hardware Accelerated >",
+                            "< 8K Video · Workshop/Studio (under work) · Advanced D3D11 Shader Effects >",
+                            "< Desktop Widgets · Taskbar Customization · Audio Reactive >",
+                            "< 100% Free · No limits, no subscriptions >",
                         ]}
                         loop={0}
                         cursor
                         cursorStyle="_"
-                        typeSpeed={45}
-                        deleteSpeed={25}
+                        typeSpeed={25}
+                        deleteSpeed={15}
                         delaySpeed={2200}
                     />
                 </div>
