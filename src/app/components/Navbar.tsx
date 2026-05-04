@@ -148,9 +148,9 @@ export const Navbar = () => {
 
     return (
         <div
-            className="fixed top-2 z-[100] w-[calc(100%-1.5rem)] max-w-5xl left-1/2 -translate-x-1/2 transition-all duration-200"
+            className="fixed top-2 md:top-4 z-[100] w-[calc(100%-1.5rem)] md:w-[calc(100%-2rem)] max-w-5xl left-1/2 -translate-x-1/2 transition-all duration-300"
             style={{
-                transform: !isVisible ? "translateY(-100px)" : "translateY(0)",
+                transform: !isVisible ? "translateY(-150%)" : "translateY(0)",
                 opacity: isVisible ? 1 : 0,
                 pointerEvents: isVisible ? "auto" : "none",
             }}
@@ -163,18 +163,18 @@ export const Navbar = () => {
             }}
         >
             <div
-                className={`backdrop-blur-md shadow-xl border rounded-2xl overflow-hidden transition-all duration-200 ${base}`}
+                className={`backdrop-blur-xl shadow-xl border rounded-[20px] overflow-hidden transition-all duration-300 ${base}`}
             >
-                <div className="flex items-center h-14 px-4 gap-2">
-                    <Link href="/" className="group flex items-center mr-1 opacity-90 hover:opacity-100 transition-opacity shrink-0 relative">
-                        <img src="/colorwall.png" alt="ColorWall logo" className="h-7 object-contain" />
+                <div className="flex items-center justify-between h-14 md:h-16 px-2 sm:px-4 md:px-6 gap-1 sm:gap-2">
+                    <Link href="/" className="group flex items-center opacity-90 hover:opacity-100 transition-opacity shrink-0 relative">
+                        <img src="/colorwall.png" alt="ColorWall logo" className="h-6 md:h-7 object-contain" />
                         <span className={`absolute left-[76px] top-1/2 -translate-y-1/2 px-4 py-2 rounded-xl text-xs font-mono font-bold tracking-widest uppercase whitespace-nowrap opacity-0 group-hover:opacity-100 shadow-xl transition-all pointer-events-none drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]
-              ${isDark ? "bg-[#0a0a0a]/90 border border-white/10 text-white" : "bg-white/90 border border-black/10 text-black"}`}>
+              ${isDark ? "bg-[#0a0a0a]/90 border border-white/10 text-white" : "bg-white/90 border border-black/10 text-black"} hidden md:block`}>
                             ColorWall
                         </span>
                     </Link>
 
-                    <nav className="hidden md:flex items-center justify-center gap-0.5 flex-1">
+                    <nav className="flex items-center justify-evenly md:justify-center gap-1 sm:gap-2 flex-1 mx-1">
                         {navLinks.map((link) => {
                             const isActive = pathname === link.href;
                             const isExternal = link.href.startsWith("http");
@@ -185,64 +185,64 @@ export const Navbar = () => {
                                     target={isExternal ? "_blank" : undefined}
                                     rel={isExternal ? "noopener noreferrer" : undefined}
                                     onClick={(event) => handleNavClick(event, link.href, isExternal)}
-                                    className={`px-3 py-2 rounded-xl text-[11px] sm:text-xs font-mono font-semibold tracking-widest uppercase transition-all duration-200 flex items-center gap-2
+                                    title={link.name}
+                                    className={`p-2.5 sm:p-3 md:px-3 md:py-2 rounded-xl text-xs font-mono font-semibold tracking-widest uppercase transition-all duration-200 flex items-center md:gap-2
                     ${isActive
                                             ? isDark ? "bg-white/10 text-white" : "bg-black/6 text-black"
-                                            : isDark ? "text-white/55 hover:text-white hover:bg-white/7" : "text-black/50 hover:text-black hover:bg-black/4"
+                                            : isDark ? "text-white/60 hover:text-white hover:bg-white/7" : "text-black/50 hover:text-black hover:bg-black/4"
                                         }`}
                                 >
                                     {loadingRoute === link.href ? (
-                                        <Loader2 size={16} strokeWidth={1.8} className="animate-spin" />
+                                        <Loader2 size={18} strokeWidth={2} className="animate-spin md:w-4 md:h-4" />
                                     ) : (
-                                        <link.icon size={16} strokeWidth={1.8} />
+                                        <link.icon size={18} strokeWidth={2} className="md:w-4 md:h-4" />
                                     )}
-                                    {link.name}
+                                    <span className="hidden md:block">{link.name}</span>
                                 </Link>
                             );
                         })}
                     </nav>
 
-                    <div className="flex-1 md:flex-none" />
-                    <div className="hidden md:flex items-center gap-0.5">
-                        <a href="https://github.com/colorwall/colorwall" target="_blank" rel="noopener noreferrer"
-                            aria-label="GitHub" className={`p-2 rounded-lg transition-all duration-200 ${iconBtn}`}>
-                            <GithubIcon />
-                        </a>
-                        <a href="https://discord.gg/cHVwPkBC7p" target="_blank" rel="noopener noreferrer"
-                            aria-label="Discord" className={`p-2 rounded-lg transition-all duration-200 ${isDark ? "text-white/50 hover:text-[#5865F2] hover:bg-[#5865F2]/10" : "text-black/40 hover:text-[#5865F2] hover:bg-[#5865F2]/8"}`}>
-                            <DiscordIcon />
-                        </a>
-                        <a href="https://x.com/colorwall_xyz" target="_blank" rel="noopener noreferrer"
-                            aria-label="X (Twitter)" className={`p-2 rounded-lg transition-all duration-200 ${iconBtn}`}>
-                            <XIcon />
-                        </a>
-                        <div className={`w-px h-5 mx-1.5 ${isDark ? "bg-white/10" : "bg-black/8"}`} />
+                    <div className="flex items-center gap-1 sm:gap-2 shrink-0">
+                        {/* Desktop-only Socials */}
+                        <div className="hidden md:flex items-center gap-0.5">
+                            <a href="https://github.com/colorwall/colorwall" target="_blank" rel="noopener noreferrer"
+                                aria-label="GitHub" className={`p-2 rounded-lg transition-all duration-200 ${iconBtn}`}>
+                                <GithubIcon />
+                            </a>
+                            <a href="https://discord.gg/cHVwPkBC7p" target="_blank" rel="noopener noreferrer"
+                                aria-label="Discord" className={`p-2 rounded-lg transition-all duration-200 ${isDark ? "text-white/50 hover:text-[#5865F2] hover:bg-[#5865F2]/10" : "text-black/40 hover:text-[#5865F2] hover:bg-[#5865F2]/8"}`}>
+                                <DiscordIcon />
+                            </a>
+                            <a href="https://x.com/colorwall_xyz" target="_blank" rel="noopener noreferrer"
+                                aria-label="X (Twitter)" className={`p-2 rounded-lg transition-all duration-200 ${iconBtn}`}>
+                                <XIcon />
+                            </a>
+                            <div className={`w-px h-5 mx-1.5 ${isDark ? "bg-white/10" : "bg-black/8"}`} />
+                        </div>
+                        
+                        {/* Always-visible Utilities */}
                         <button onClick={toggleTheme}
-                            className={`p-2 rounded-lg transition-all duration-200 ${iconBtn}`}
+                            className={`p-2.5 sm:p-3 md:p-2 rounded-xl md:rounded-lg transition-all duration-200 ${iconBtn}`}
                             aria-label={isDark ? "Switch to light theme" : "Switch to dark theme"}
                             title="Toggle theme">
                             {isDark ? <SunIcon /> : <MoonIcon />}
                         </button>
                         <button
                             onClick={toggleSound}
-                            className={`p-2 rounded-lg transition-all duration-200 ${isSoundOn
+                            className={`p-2.5 sm:p-3 md:p-2 rounded-xl md:rounded-lg transition-all duration-200 ${isSoundOn
                                 ? isDark ? "text-white bg-white/10 hover:bg-white/15" : "text-black bg-black/8 hover:bg-black/12"
                                 : iconBtn}`}
                             title={isSoundOn ? "Mute ambient sound" : "Play ambient sound"}
                         >
                             {isSoundOn ? <SoundOnIcon /> : <SoundOffIcon />}
                         </button>
-                    </div>
-                    <div className="md:hidden flex items-center gap-1">
-                        <button onClick={toggleTheme} aria-label={isDark ? "Switch to light theme" : "Switch to dark theme"} className={`p-2 rounded-lg transition-all duration-200 ${iconBtn}`}>
-                            {isDark ? <SunIcon /> : <MoonIcon />}
-                        </button>
                         <button
                             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                             aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
-                            className={`p-2 rounded-lg transition-all duration-200 ${iconBtn}`}
+                            className={`md:hidden p-2.5 sm:p-3 rounded-xl transition-all duration-200 ${iconBtn}`}
                         >
-                            {isMobileMenuOpen ? <X size={18} strokeWidth={1.8} /> : <Menu size={18} strokeWidth={1.8} />}
+                            {isMobileMenuOpen ? <X size={20} strokeWidth={2} /> : <Menu size={20} strokeWidth={2} />}
                         </button>
                     </div>
                 </div>
@@ -254,7 +254,7 @@ export const Navbar = () => {
                             opacity: 1,
                         }}
                     >
-                        <div className={`px-2 pb-2 pt-1 flex flex-col gap-0.5 border-t ${isDark ? "border-white/8" : "border-black/6"}`}>
+                        <div className={`px-2 pb-2 pt-1 flex flex-col gap-0.5 border-t ${isDark ? "border-white/10" : "border-black/10"}`}>
                             {navLinks.map((link) => {
                                 const isActive = pathname === link.href;
                                 const isExternal = link.href.startsWith("http");
@@ -265,22 +265,22 @@ export const Navbar = () => {
                                         target={isExternal ? "_blank" : undefined}
                                         rel={isExternal ? "noopener noreferrer" : undefined}
                                         onClick={(event) => handleNavClick(event, link.href, isExternal, true)}
-                                        className={`px-3 py-2 rounded-xl text-[11px] sm:text-xs font-mono font-semibold tracking-widest uppercase transition-all duration-200 flex items-center gap-2.5
+                                        className={`px-4 py-3 sm:py-4 rounded-xl text-xs sm:text-sm font-mono font-semibold tracking-widest uppercase transition-all duration-200 flex items-center gap-3
                         ${isActive
                                             ? isDark ? "bg-white/10 text-white" : "bg-black/6 text-black"
-                                            : isDark ? "text-white/55 hover:text-white hover:bg-white/7" : "text-black/50 hover:text-black hover:bg-black/4"
+                                            : isDark ? "text-white/70 hover:text-white hover:bg-white/7" : "text-black/60 hover:text-black hover:bg-black/4"
                                         }`}
                                     >
                                         {loadingRoute === link.href ? (
-                                            <Loader2 size={16} strokeWidth={1.8} className="animate-spin" />
+                                            <Loader2 size={18} strokeWidth={2} className="animate-spin" />
                                         ) : (
-                                            <link.icon size={16} strokeWidth={1.8} />
+                                            <link.icon size={18} strokeWidth={2} />
                                         )}
                                         {link.name}
                                     </Link>
                                 );
                             })}
-                            <div className={`flex items-center gap-2 px-3 pt-1.5 mt-0.5 border-t ${isDark ? "border-white/8" : "border-black/6"}`}>
+                            <div className={`flex items-center gap-2 px-3 pt-1.5 mt-0.5 border-t ${isDark ? "border-white/10" : "border-black/10"}`}>
                                 <a href="https://github.com/colorwall/colorwall" target="_blank" rel="noopener noreferrer"
                                     aria-label="GitHub" className={`p-2 rounded-lg transition-all duration-200 ${iconBtn}`}>
                                     <GithubIcon />
