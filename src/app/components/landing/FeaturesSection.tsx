@@ -168,7 +168,7 @@ const features = [
         id: "05",
         icon: AudioIcon,
         title: "Audio Reactive Ecosystem",
-        desc: "Native system audio analysis injects rhythmic life into your wallpapers, particles, and widgets in real-time.",
+        desc: "Native system audio analysis injects rhythmic life into your wallpapers(available in widgets for now), particles, and widgets in real-time.",
     },
     {
         id: "06",
@@ -180,13 +180,13 @@ const features = [
         id: "07",
         icon: MonitorIcon,
         title: "Multi-Monitor Support",
-        desc: "Flawless multi-display support. Run different engines per screen and permanently save widget layouts.",
+        desc: "Flawless multi-display support. Run different Videos/Scenes/Widgets per screen and permanently save widget layouts.",
     },
     {
         id: "08",
         icon: WorkshopIcon,
         title: "Massive Workshop",
-        desc: "Browse and download thousands of 4K videos, webgl scenes, and community-made .colorwall projects instantly.",
+        desc: "Browse and download thousands of 4K videos, webgl scenes, and community-made .colorwall projects (UNDER DEV)",
     },
     {
         id: "09",
@@ -212,7 +212,8 @@ export const FeaturesSection = ({ theme }: { theme: "dark" | "light" }) => {
                 >
                     <p className={`text-xs font-mono uppercase tracking-[0.2em] mb-4 ml-1
                         ${theme === "dark" ? "text-blue-400" : "text-blue-600"}`}>
-                        system_capabilities
+                        the app is still under development and constantly updates! 
+                        Read capablities below:
                     </p>
                     <GradientHeading
                         text={"Performance\nwithout compromise"}
