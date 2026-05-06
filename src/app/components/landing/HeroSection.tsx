@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 import { Typewriter } from "react-simple-typewriter";
 import Image from "next/image";
 import Link from "next/link";
@@ -23,6 +23,50 @@ const HERO_VIDEOS: HeroVideo[] = [
     { src: "/videos/mycutekoii.webm", type: "video/webm", poster: "/videos/posters/mycutekoii.webp" },
 ];
 
+const HeroBackground = React.memo(() => (
+    <div 
+        className="absolute inset-0 z-0 overflow-hidden pointer-events-none bg-black"
+        suppressHydrationWarning
+        dangerouslySetInnerHTML={{ __html: `
+            <img id="hero-poster" src="${HERO_VIDEOS[0].poster}" alt="Background Poster" fetchpriority="high" class="object-cover absolute inset-0 w-full h-full opacity-100 transition-opacity duration-1000 ease-in-out" />
+            <video id="hero-video" src="${HERO_VIDEOS[0].src}" autoplay muted loop playsinline preload="auto" fetchpriority="high" class="absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-1000 ease-in-out"></video>
+            <script>
+                (function() {
+                    try {
+                        var videos = ${JSON.stringify(HERO_VIDEOS)};
+                        var v = videos[Math.floor(Math.random() * videos.length)];
+                        var poster = document.getElementById('hero-poster');
+                        var video = document.getElementById('hero-video');
+                        
+                        if (poster.src !== v.poster) {
+                            poster.src = v.poster;
+                            video.src = v.src;
+                            video.load();
+                        }
+
+                        var forcePlay = function() {
+                            var playPromise = video.play();
+                            if (playPromise !== undefined) {
+                                playPromise.catch(function(e) { console.error('Autoplay blocked:', e); });
+                            }
+                        };
+
+                        video.oncanplay = function() {
+                            if (poster.classList.contains('opacity-100')) {
+                                video.classList.replace('opacity-0', 'opacity-100');
+                                poster.classList.replace('opacity-100', 'opacity-0');
+                            }
+                            forcePlay();
+                        };
+                        
+                        setTimeout(forcePlay, 500);
+
+                    } catch (e) { console.error(e); }
+                })();
+            </script>
+        `}}
+    />
+), () => true);
 
 export const HeroSection = () => {
     const router = useRouter();
@@ -49,37 +93,7 @@ export const HeroSection = () => {
             {/* Preload removed to avoid console warnings about unused preloaded resources. 
                The chosen image is still loaded with priority by the Image component. */}
 
-            {/* video bg - using raw HTML injection for ZERO latency load without React hydration mismatch */}
-            <div 
-                className="absolute inset-0 z-0 overflow-hidden pointer-events-none bg-black"
-                suppressHydrationWarning
-                dangerouslySetInnerHTML={{ __html: `
-                    <img id="hero-poster" alt="Background Poster" fetchpriority="high" class="object-cover absolute inset-0 w-full h-full opacity-100 transition-opacity duration-1000 ease-in-out" />
-                    <video id="hero-video" autoplay muted loop playsinline preload="auto" fetchpriority="high" class="absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-1000 ease-in-out"></video>
-                    <script>
-                        (function() {
-                            try {
-                                var videos = ${JSON.stringify(HERO_VIDEOS)};
-                                var v = videos[Math.floor(Math.random() * videos.length)];
-                                var poster = document.getElementById('hero-poster');
-                                var video = document.getElementById('hero-video');
-                                
-                                poster.src = v.poster;
-                                
-                                var source = document.createElement('source');
-                                source.src = v.src;
-                                source.type = v.type;
-                                video.appendChild(source);
-
-                                video.oncanplay = function() {
-                                    video.classList.replace('opacity-0', 'opacity-100');
-                                    poster.classList.replace('opacity-100', 'opacity-0');
-                                };
-                            } catch (e) { console.error(e); }
-                        })();
-                    </script>
-                `}}
-            />
+            <HeroBackground />
 
             <div className="relative z-10 text-center flex flex-col items-center space-y-6 sm:space-y-8 md:space-y-10 max-w-4xl xl:max-w-5xl">
                 {/* logo */}
