@@ -23,15 +23,9 @@ const HERO_VIDEOS: HeroVideo[] = [
     { src: "/videos/mycutekoii.webm", type: "video/webm", poster: "/videos/posters/mycutekoii.webp" },
 ];
 
-const pickRandomVideo = () => {
-    const r = Math.random();
-    return HERO_VIDEOS[Math.floor(r * HERO_VIDEOS.length)];
-};
 
 export const HeroSection = () => {
     const router = useRouter();
-    const [bgVideo, setBgVideo] = useState<HeroVideo | null>(null);
-    const [isVideoLoaded, setIsVideoLoaded] = useState(false);
     const [loadingButton, setLoadingButton] = useState<"download" | "changelog" | "discord" | null>(null);
 
     const handleInternalNavigation = (
@@ -48,11 +42,6 @@ export const HeroSection = () => {
         }, 120);
     };
 
-    useEffect(() => {
-        setIsVideoLoaded(false);
-        setBgVideo(pickRandomVideo());
-    }, []);
-
     return (
         <section
             className="min-h-screen flex items-center justify-center relative overflow-hidden px-4 bg-black text-white"
@@ -60,35 +49,37 @@ export const HeroSection = () => {
             {/* Preload removed to avoid console warnings about unused preloaded resources. 
                The chosen image is still loaded with priority by the Image component. */}
 
-            {/* video bg */}
-            <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none bg-black">
-                {bgVideo && (
-                    <>
-                        <Image
-                            src={bgVideo.poster}
-                            alt="Background Poster"
-                            fill
-                            priority
-                            unoptimized
-                            className={`object-cover transition-opacity duration-1000 ease-in-out ${isVideoLoaded ? "opacity-0" : "opacity-100"}`}
-                        />
-                        <video
-                            key={bgVideo.src}
-                            autoPlay
-                            muted
-                            loop
-                            playsInline
-                            preload="auto"
-                            // @ts-expect-error React types don't officially support fetchPriority natively on video elements yet in this TS version
-                            fetchPriority="high"
-                            onCanPlay={() => setIsVideoLoaded(true)}
-                            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out ${isVideoLoaded ? "opacity-100" : "opacity-0"}`}
-                        >
-                            <source src={bgVideo.src} type={bgVideo.type} />
-                        </video>
-                    </>
-                )}
-            </div>
+            {/* video bg - using raw HTML injection for ZERO latency load without React hydration mismatch */}
+            <div 
+                className="absolute inset-0 z-0 overflow-hidden pointer-events-none bg-black"
+                suppressHydrationWarning
+                dangerouslySetInnerHTML={{ __html: `
+                    <img id="hero-poster" alt="Background Poster" fetchpriority="high" class="object-cover absolute inset-0 w-full h-full opacity-100 transition-opacity duration-1000 ease-in-out" />
+                    <video id="hero-video" autoplay muted loop playsinline preload="auto" fetchpriority="high" class="absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-1000 ease-in-out"></video>
+                    <script>
+                        (function() {
+                            try {
+                                var videos = ${JSON.stringify(HERO_VIDEOS)};
+                                var v = videos[Math.floor(Math.random() * videos.length)];
+                                var poster = document.getElementById('hero-poster');
+                                var video = document.getElementById('hero-video');
+                                
+                                poster.src = v.poster;
+                                
+                                var source = document.createElement('source');
+                                source.src = v.src;
+                                source.type = v.type;
+                                video.appendChild(source);
+
+                                video.oncanplay = function() {
+                                    video.classList.replace('opacity-0', 'opacity-100');
+                                    poster.classList.replace('opacity-100', 'opacity-0');
+                                };
+                            } catch (e) { console.error(e); }
+                        })();
+                    </script>
+                `}}
+            />
 
             <div className="relative z-10 text-center flex flex-col items-center space-y-6 sm:space-y-8 md:space-y-10 max-w-4xl xl:max-w-5xl">
                 {/* logo */}
