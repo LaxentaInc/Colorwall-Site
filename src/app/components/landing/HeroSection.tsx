@@ -57,10 +57,8 @@ export const HeroSection = () => {
         <section
             className="min-h-screen flex items-center justify-center relative overflow-hidden px-4 bg-black text-white"
         >
-            {/* Preload all raw posters so they are cached and ready the moment a random video is picked */}
-            {HERO_VIDEOS.map((video) => (
-                <link key={video.poster} rel="preload" href={video.poster} as="image" type="image/webp" />
-            ))}
+            {/* Preload removed to avoid console warnings about unused preloaded resources. 
+               The chosen image is still loaded with priority by the Image component. */}
 
             {/* video bg */}
             <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none bg-black">
@@ -106,7 +104,7 @@ export const HeroSection = () => {
                         alt="ColorWall"
                         width={512}
                         height={192}
-                        className="w-64 sm:w-80 md:w-96 lg:w-[448px] xl:w-[512px] h-auto object-contain drop-shadow-[0_20px_50px_rgba(0,0,0,0.9)]"
+                        className="w-64 sm:w-80 md:w-96 lg:w-[448px] xl:w-[512px] h-auto object-contain"
                         style={{ height: 'auto' }}
                         priority
                         fetchPriority="high"
@@ -118,7 +116,7 @@ export const HeroSection = () => {
                 </h1>
 
                 {/* typewriter */}
-                <div className="text-xs sm:text-sm md:text-base lg:text-lg font-mono text-white/90 font-semibold drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]">
+                <div className="min-h-[3rem] md:min-h-[3.5rem] flex items-center justify-center text-xs sm:text-sm md:text-base lg:text-lg font-mono text-white/90 font-semibold drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]">
                     <Typewriter
                         words={[
                             "< Your Desktop Called, It wants Personality! >",
@@ -130,7 +128,17 @@ export const HeroSection = () => {
                         ]}
                         loop={0}
                         cursor
-                        cursorStyle="\_"
+                        cursorStyle={
+                            <svg 
+                                width="0.6em" 
+                                height="1em" 
+                                viewBox="0 0 12 24" 
+                                fill="currentColor" 
+                                className="inline-block align-middle ml-1 text-cyan-400/90"
+                            >
+                                <path d="M10 2 L12 2 L4 22 L2 22 Z" />
+                            </svg>
+                        }
                         typeSpeed={35}
                         deleteSpeed={15}
                         delaySpeed={5200}

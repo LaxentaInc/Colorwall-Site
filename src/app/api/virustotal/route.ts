@@ -50,6 +50,8 @@ export async function GET() {
                 sha1,
                 stats: vtData.data.attributes.last_analysis_stats,
                 link: `https://www.virustotal.com/gui/file/${sha256}?nocache=1`
+            }, {
+                headers: { "Cache-Control": "public, max-age=3600, s-maxage=3600, stale-while-revalidate=86400" }
             });
         }
 
@@ -82,6 +84,8 @@ export async function GET() {
                 sha1,
                 stats: null, // no stats yet, scanning in progress
                 link: `https://www.virustotal.com/gui/file/${sha256}?nocache=1`
+            }, {
+                headers: { "Cache-Control": "public, max-age=3600, s-maxage=3600, stale-while-revalidate=86400" }
             });
         }
 
