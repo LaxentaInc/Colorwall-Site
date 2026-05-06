@@ -23,15 +23,9 @@ const HERO_VIDEOS: HeroVideo[] = [
     { src: "/videos/mycutekoii.webm", type: "video/webm", poster: "/videos/posters/mycutekoii.webp" },
 ];
 
-const pickRandomVideo = () => {
-    const r = Math.random();
-    return HERO_VIDEOS[Math.floor(r * HERO_VIDEOS.length)];
-};
 
 export const HeroSection = () => {
     const router = useRouter();
-    const [bgVideo, setBgVideo] = useState<HeroVideo | null>(null);
-    const [isVideoLoaded, setIsVideoLoaded] = useState(false);
     const [loadingButton, setLoadingButton] = useState<"download" | "changelog" | "discord" | null>(null);
 
     const handleInternalNavigation = (
@@ -48,51 +42,44 @@ export const HeroSection = () => {
         }, 120);
     };
 
-    useEffect(() => {
-        setIsVideoLoaded(false);
-        setBgVideo(pickRandomVideo());
-    }, []);
-
     return (
         <section
             className="min-h-screen flex items-center justify-center relative overflow-hidden px-4 bg-black text-white"
         >
-            {/* Preload all raw posters so they are cached and ready the moment a random video is picked */}
-            {HERO_VIDEOS.map((video) => (
-                <link key={video.poster} rel="preload" href={video.poster} as="image" type="image/webp" />
-            ))}
+            {/* Preload removed to avoid console warnings about unused preloaded resources. 
+               The chosen image is still loaded with priority by the Image component. */}
 
-            {/* video bg */}
-            <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none bg-black">
-                {bgVideo && (
-                    <>
-                        <Image
-                            src={bgVideo.poster}
-                            alt="Background Poster"
-                            fill
-                            priority
-                            unoptimized
-                            className={`object-cover transition-opacity duration-1000 ease-in-out ${isVideoLoaded ? "opacity-0" : "opacity-65"}`}
-                        />
-                        <video
-                            key={bgVideo.src}
-                            autoPlay
-                            muted
-                            loop
-                            playsInline
-                            preload="auto"
-                            // @ts-expect-error React types don't officially support fetchPriority natively on video elements yet in this TS version
-                            fetchPriority="high"
-                            onCanPlay={() => setIsVideoLoaded(true)}
-                            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out ${isVideoLoaded ? "opacity-65" : "opacity-0"}`}
-                        >
-                            <source src={bgVideo.src} type={bgVideo.type} />
-                        </video>
-                    </>
-                )}
-            </div>
+            {/* video bg - using raw HTML injection for ZERO latency load without React hydration mismatch */}
+            <div 
+                className="absolute inset-0 z-0 overflow-hidden pointer-events-none bg-black"
+                suppressHydrationWarning
+                dangerouslySetInnerHTML={{ __html: `
+                    <img id="hero-poster" alt="Background Poster" fetchpriority="high" class="object-cover absolute inset-0 w-full h-full opacity-100 transition-opacity duration-1000 ease-in-out" />
+                    <video id="hero-video" autoplay muted loop playsinline preload="auto" fetchpriority="high" class="absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-1000 ease-in-out"></video>
+                    <script>
+                        (function() {
+                            try {
+                                var videos = ${JSON.stringify(HERO_VIDEOS)};
+                                var v = videos[Math.floor(Math.random() * videos.length)];
+                                var poster = document.getElementById('hero-poster');
+                                var video = document.getElementById('hero-video');
+                                
+                                poster.src = v.poster;
+                                
+                                var source = document.createElement('source');
+                                source.src = v.src;
+                                source.type = v.type;
+                                video.appendChild(source);
 
-            <div className="absolute inset-0 z-[1] bg-black/35 pointer-events-none" aria-hidden="true" />
+                                video.oncanplay = function() {
+                                    video.classList.replace('opacity-0', 'opacity-100');
+                                    poster.classList.replace('opacity-100', 'opacity-0');
+                                };
+                            } catch (e) { console.error(e); }
+                        })();
+                    </script>
+                `}}
+            />
 
             <div className="relative z-10 text-center flex flex-col items-center space-y-6 sm:space-y-8 md:space-y-10 max-w-4xl xl:max-w-5xl">
                 {/* logo */}
@@ -106,7 +93,7 @@ export const HeroSection = () => {
                         alt="ColorWall"
                         width={512}
                         height={192}
-                        className="w-64 sm:w-80 md:w-96 lg:w-[448px] xl:w-[512px] h-auto object-contain drop-shadow-[0_20px_50px_rgba(0,0,0,0.9)]"
+                        className="w-64 sm:w-80 md:w-96 lg:w-[448px] xl:w-[512px] h-auto object-contain"
                         style={{ height: 'auto' }}
                         priority
                         fetchPriority="high"
@@ -118,10 +105,10 @@ export const HeroSection = () => {
                 </h1>
 
                 {/* typewriter */}
-                <div className="text-xs sm:text-sm md:text-base lg:text-lg font-mono text-white/90 font-medium drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]">
+                <div className="min-h-[3rem] md:min-h-[3.5rem] flex items-center justify-center text-xs sm:text-sm md:text-base lg:text-lg font-mono text-white/90 font-semibold drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]">
                     <Typewriter
                         words={[
-                            "< Your Desktop Called, it wants personality! >",
+                            "< Your Desktop Called, It wants Personality! >",
                             "< A Wallpaper Engine built for performance and You!>",
                             "< Built in Rust + Tauri · DirectX 11/IMF/MPV/WEB2 · Hardware Accelerated >",
                             "< 8K Video · Workshop/Studio (under work) · Advanced D3D11 Shader Effects >",
@@ -130,17 +117,27 @@ export const HeroSection = () => {
                         ]}
                         loop={0}
                         cursor
-                        cursorStyle="_"
-                        typeSpeed={25}
+                        cursorStyle={
+                            <svg 
+                                width="0.6em" 
+                                height="1em" 
+                                viewBox="0 0 12 24" 
+                                fill="currentColor" 
+                                className="inline-block align-middle ml-1 text-cyan-400/90"
+                            >
+                                <path d="M10 2 L12 2 L4 22 L2 22 Z" />
+                            </svg>
+                        }
+                        typeSpeed={35}
                         deleteSpeed={15}
-                        delaySpeed={2200}
+                        delaySpeed={5200}
                     />
                 </div>
 
                 {/* CTA row */}
-                <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 pt-2 sm:pt-4">
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 sm:gap-4 pt-2 sm:pt-4 w-full sm:w-auto px-8 sm:px-0 max-w-xs sm:max-w-none mx-auto">
                     {/* download */}
-                    <div className="relative group inline-flex rounded-[14px] overflow-hidden p-[5px] hover:-translate-y-0.5 transition-transform duration-300 shadow-[0_8px_30px_rgba(255,255,255,0.15)]">
+                    <div className="relative group flex sm:inline-flex w-full sm:w-auto rounded-[12px] overflow-hidden p-[2px] hover:-translate-y-0.5 transition-transform duration-300 shadow-[0_4px_20px_rgba(255,255,255,0.15)]">
                         {/* Spinning Conic Gradient for Edge Glint */}
                         <span className="absolute inset-[-1000%] animate-[spin_3s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,transparent_0%,#60a5fa_50%,transparent_100%)] opacity-100 group-hover:opacity-100 transition-opacity duration-300" />
                         
@@ -167,7 +164,7 @@ export const HeroSection = () => {
                         href="/changelog"
                         onClick={(event) => handleInternalNavigation(event, "changelog", "/changelog")}
                         aria-busy={loadingButton === "changelog"}
-                        className="inline-flex items-center gap-1.5 sm:gap-2 px-5 py-3 sm:px-7 sm:py-4 rounded-xl font-semibold text-xs sm:text-sm tracking-wide transition-all duration-300 hover:-translate-y-0.5 border border-white/20 text-white bg-black/30 hover:border-white/40 hover:bg-black/50"
+                        className="flex sm:inline-flex justify-center items-center gap-1.5 sm:gap-2 px-5 py-3 sm:px-7 sm:py-4 rounded-xl font-semibold text-xs sm:text-sm tracking-wide transition-all duration-300 hover:-translate-y-0.5 border border-white/20 text-white bg-black/30 hover:border-white/40 hover:bg-black/50 w-full sm:w-auto"
                     >
                         {loadingButton === "changelog" ? (
                             <LoaderCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4 animate-spin" />
@@ -184,7 +181,7 @@ export const HeroSection = () => {
                         rel="noopener noreferrer"
                         onClick={() => setLoadingButton("discord")}
                         aria-busy={loadingButton === "discord"}
-                        className="inline-flex items-center gap-1.5 sm:gap-2 px-5 py-3 sm:px-7 sm:py-4 rounded-xl font-semibold text-xs sm:text-sm tracking-wide transition-all duration-300 hover:-translate-y-0.5 border border-white/20 text-white bg-black/30 hover:border-indigo-400/50 hover:bg-indigo-500/20 hover:text-indigo-300"
+                        className="flex sm:inline-flex justify-center items-center gap-1.5 sm:gap-2 px-5 py-3 sm:px-7 sm:py-4 rounded-xl font-semibold text-xs sm:text-sm tracking-wide transition-all duration-300 hover:-translate-y-0.5 border border-white/20 text-white bg-black/30 hover:border-indigo-400/50 hover:bg-indigo-500/20 hover:text-indigo-300 w-full sm:w-auto"
                     >
                         {loadingButton === "discord" ? (
                             <LoaderCircle className="w-[1em] h-[1em] inline-block text-sm sm:text-base animate-spin" />

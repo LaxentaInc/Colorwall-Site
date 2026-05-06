@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence, useInView } from "framer-motion";
 import {
     ShieldCheck,
     ShieldAlert,
@@ -44,15 +44,30 @@ export const SecurityReport = ({
 
     const isDark = theme === "dark";
 
+    const ref = useRef<HTMLElement>(null);
+    const isInView = useInView(ref, { once: true, margin: "200px" });
+
     useEffect(() => {
+        if (!isInView) return;
+
+        const cached = sessionStorage.getItem("vtReportCache");
+        if (cached) {
+            setVtReport(JSON.parse(cached));
+            setIsLoading(false);
+            return;
+        }
+
         fetch("/api/virustotal")
             .then((res) => res.json())
             .then((data) => {
-                if (!data.error) setVtReport(data);
+                if (!data.error) {
+                    setVtReport(data);
+                    sessionStorage.setItem("vtReportCache", JSON.stringify(data));
+                }
                 setIsLoading(false);
             })
             .catch(() => setIsLoading(false));
-    }, []);
+    }, [isInView]);
 
     const isClean =
         !vtReport?.stats?.malicious && !vtReport?.stats?.suspicious;
@@ -108,6 +123,7 @@ export const SecurityReport = ({
 
     return (
         <section
+            ref={ref}
             className={`py-24 px-4 sm:px-8 relative w-full flex justify-center overflow-hidden ${className}`}
         >
 
