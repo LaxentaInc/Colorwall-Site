@@ -73,17 +73,21 @@ export const Navbar = () => {
     const isHovered = useRef(false);
 
     useEffect(() => {
-        audioRef.current = new Audio("/temp_recording.wav");
-        audioRef.current.loop = true;
-        audioRef.current.volume = 1.0;
         return () => {
-            audioRef.current?.pause();
-            audioRef.current = null;
+            if (audioRef.current) {
+                audioRef.current.pause();
+                audioRef.current = null;
+            }
         };
     }, []);
 
     const toggleSound = useCallback(() => {
-        if (!audioRef.current) return;
+        if (!audioRef.current) {
+            audioRef.current = new Audio("/instrumental.mp3");
+            audioRef.current.loop = true;
+            audioRef.current.volume = 1.0;
+        }
+
         if (isSoundOn) {
             audioRef.current.pause();
         } else {
