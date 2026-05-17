@@ -213,7 +213,7 @@ export default function AboutPage() {
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img src="https://github-readme-streak-stats-steel-pi.vercel.app/?user=LaxentaInc&private=true&theme=dark&hide_border=false&date_format=j%20M%5B%20Y%5D&mode=weekly" alt="GitHub Streak Weekly" className="h-[180px] rounded-xl" loading="lazy" />
                     </div>
-                    <div className="mt-4">
+                    <div className="mt-4 flex items-center justify-center">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img src="https://streak-stats.demolab.com?user=LaxentaInc&hide_border=true&background=0d1117&stroke=1e2530&ring=00b4d8&fire=00b4d8&currStreakLabel=00b4d8&sideNums=e0eaff&sideLabels=8ca0c0&dates=8ca0c0&currStreakNum=e0eaff" alt="GitHub Streak" className="rounded-xl max-w-full" loading="lazy" />
                     </div>
@@ -224,15 +224,15 @@ export default function AboutPage() {
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src="https://raw.githubusercontent.com/innng/innng/master/assets/kyubey.gif" width={32} alt="kyubey" className="mx-auto mb-4" />
                     <p className={`text-lg italic font-medium mb-3 ${isDark ? "text-zinc-500" : "text-zinc-400"}`}>
-                        WELL mai real repos are private :c i promise i do stuff
+                        WELL mai bigger repos are private :c i promise i do stuff
                     </p>
                     <a href="https://colorwall.xyz" target="_blank" rel="noopener noreferrer"
                         className={`text-sm font-mono transition-colors ${isDark ? "text-cyan-500/50 hover:text-cyan-400" : "text-cyan-600/50 hover:text-cyan-600"}`}>
                         colorwall.xyz — check it out if you want &lt;.3
                     </a>
-                    <p className={`text-sm flex items-center justify-center gap-2 mt-6 ${isDark ? "text-zinc-600" : "text-zinc-400"}`}>
+                    {/* <p className={`text-sm flex items-center justify-center gap-2 mt-6 ${isDark ? "text-zinc-600" : "text-zinc-400"}`}>
                         made with <Heart className="w-3.5 h-3.5 text-rose-500" /> by laxenta inc
-                    </p>
+                    </p> */}
                 </div>
 
             </main>
