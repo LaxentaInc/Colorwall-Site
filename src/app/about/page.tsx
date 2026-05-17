@@ -220,11 +220,14 @@ export default function AboutPage() {
                 </div>
 
                 {/* ══════════ bottom ══════════ */}
-                <div className="text-center pt-8">
+                <div className="text-center pt-1 pb-8">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src="https://raw.githubusercontent.com/innng/innng/master/assets/kyubey.gif" width={32} alt="kyubey" className="mx-auto mb-4" />
-                    <p className={`text-lg italic font-medium mb-3 ${isDark ? "text-zinc-500" : "text-zinc-400"}`}>
-                        WELL mai bigger repos are private :c i promise i do stuff
+                    <p className={`text-lg font-medium mb-3 ${isDark ? "text-zinc-500" : "text-zinc-400"}`}>
+                        Well my bigger repos are private :c i promise i do stuff
+                    </p>
+                    <p className={`text-base mb-3 ${isDark ? "text-zinc-500" : "text-zinc-400"}`}>
+                        Colorwall is a work in progress and may contain bugs. We are not responsible for any damages caused by the use of this website/app. or any illegal activities that may be performed by it's users.
                     </p>
                     <a href="https://colorwall.xyz" target="_blank" rel="noopener noreferrer"
                         className={`text-sm font-mono transition-colors ${isDark ? "text-cyan-500/50 hover:text-cyan-400" : "text-cyan-600/50 hover:text-cyan-600"}`}>
