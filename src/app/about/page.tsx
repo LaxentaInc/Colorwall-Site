@@ -64,7 +64,7 @@ export default function AboutPage() {
     const isDark = theme === "dark";
 
     return (
-        <div className={`min-h-screen ${isDark ? "bg-[#080809] text-zinc-100" : "bg-slate-50 text-zinc-900"}`}>
+        <div className={`min-h-screen [font-family:'DM_Sans',sans-serif] ${isDark ? "bg-[#080809] text-zinc-100" : "bg-slate-50 text-zinc-900"}`}>
             <main className="relative z-10 max-w-5xl mx-auto px-6 lg:px-12 pt-28 pb-28">
                 <div className="mb-20">
                     <div className="flex items-center gap-3 mb-7">
@@ -206,12 +206,15 @@ export default function AboutPage() {
 
                     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                         {PROJECTS.map((project) => (
-                            <div
+                            <a
                                 key={project.name}
-                                className={`rounded-xl border p-5 transition-colors group ${isDark ? "border-white/8 bg-white/[0.02] hover:bg-white/[0.04]" : "border-zinc-200 bg-white hover:bg-zinc-50"}`}
+                                href={project.github || project.href}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className={`block rounded-xl border p-5 transition-all duration-200 group cursor-pointer hover:-translate-y-0.5 ${isDark ? "border-white/8 bg-white/[0.02] hover:bg-white/[0.05] hover:border-white/12" : "border-zinc-200 bg-white hover:bg-zinc-50 hover:shadow-md"}`}
                             >
                                 <div className="flex items-center gap-2 mb-3">
-                                    <h3 className={`text-sm font-bold ${isDark ? "text-white" : "text-zinc-900"}`}>
+                                    <h3 className={`text-sm font-bold tracking-tight ${isDark ? "text-white" : "text-zinc-900"}`}>
                                         {project.name}
                                     </h3>
                                     {project.collab && (
@@ -219,6 +222,7 @@ export default function AboutPage() {
                                             {project.collab}
                                         </span>
                                     )}
+                                    <ExternalLink className={`w-3 h-3 ml-auto opacity-0 group-hover:opacity-50 transition-opacity ${isDark ? "text-white" : "text-zinc-400"}`} />
                                 </div>
 
                                 <div className="flex flex-wrap gap-1.5 mb-3">
@@ -232,17 +236,18 @@ export default function AboutPage() {
                                     ))}
                                 </div>
 
-                                <p className={`text-[12px] leading-relaxed mb-4 ${isDark ? "text-zinc-500" : "text-zinc-500"}`}>
+                                <p className={`text-[12px] leading-relaxed mb-3 ${isDark ? "text-zinc-500" : "text-zinc-500"}`}>
                                     {project.description}
                                 </p>
 
-                                <div className="flex items-center gap-2">
+                                {/* secondary links — stop propagation so they work independently */}
+                                <div className="flex items-center gap-3" onClick={(e) => e.stopPropagation()}>
                                     {project.github && (
                                         <a
                                             href={project.github}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className={`inline-flex items-center gap-1 text-[10px] font-mono transition-colors ${isDark ? "text-zinc-500 hover:text-white" : "text-zinc-400 hover:text-zinc-800"}`}
+                                            className={`inline-flex items-center gap-1 text-[10px] font-mono transition-colors relative z-10 ${isDark ? "text-zinc-500 hover:text-white" : "text-zinc-400 hover:text-zinc-800"}`}
                                         >
                                             <Github className="w-3 h-3" />
                                             Source
@@ -253,102 +258,78 @@ export default function AboutPage() {
                                             href={project.href}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className={`inline-flex items-center gap-1 text-[10px] font-mono transition-colors ${isDark ? "text-cyan-500/60 hover:text-cyan-400" : "text-cyan-600/60 hover:text-cyan-600"}`}
+                                            className={`inline-flex items-center gap-1 text-[10px] font-mono transition-colors relative z-10 ${isDark ? "text-cyan-500/60 hover:text-cyan-400" : "text-cyan-600/60 hover:text-cyan-600"}`}
                                         >
                                             <ExternalLink className="w-3 h-3" />
                                             Visit
                                         </a>
                                     )}
                                 </div>
-                            </div>
+                            </a>
                         ))}
                     </div>
                 </div>
 
-                {/* ══════════ tech stack ══════════ */}
+                {/* ══════════ stack & stats — combined layout ══════════ */}
                 <div className="mb-20">
                     <div className="flex items-center gap-4 mb-8">
                         <div className={`h-px flex-1 bg-gradient-to-r to-transparent ${isDark ? "from-white/10" : "from-black/10"}`} />
                         <span className={`text-[10px] font-mono uppercase tracking-widest ${isDark ? "text-zinc-600" : "text-zinc-500"}`}>
-                            Stack
+                            Stack & Stats
                         </span>
                         <div className={`h-px flex-1 bg-gradient-to-l to-transparent ${isDark ? "from-white/10" : "from-black/10"}`} />
                     </div>
 
-                    <div className="flex flex-wrap items-center justify-center gap-3">
-                        {TECH_STACK.map((tech) => (
-                            <div
-                                key={tech.name}
-                                className={`inline-flex items-center gap-2 px-3 py-2 rounded-lg border text-xs font-mono font-medium transition-colors ${isDark ? "border-white/8 bg-white/[0.02] text-zinc-400 hover:bg-white/[0.05] hover:text-white" : "border-zinc-200 bg-white text-zinc-500 hover:bg-zinc-50 hover:text-zinc-800"}`}
-                            >
-                                {/* eslint-disable-next-line @next/next/no-img-element */}
-                                <img
-                                    src={`https://skillicons.dev/icons?i=${tech.icon}`}
-                                    alt={tech.name}
-                                    className="w-5 h-5"
-                                    loading="lazy"
-                                />
-                                {tech.name}
+                    <div className="grid gap-4 lg:grid-cols-2">
+                        {/* tech stack card */}
+                        <div className={`rounded-2xl border p-6 ${isDark ? "border-white/8 bg-white/[0.02]" : "border-zinc-200 bg-white"}`}>
+                            <h3 className={`text-[11px] font-mono font-bold uppercase tracking-[0.15em] mb-5 ${isDark ? "text-zinc-500" : "text-zinc-400"}`}>
+                                Technologies
+                            </h3>
+                            <div className="flex flex-wrap gap-2">
+                                {TECH_STACK.map((tech) => (
+                                    <div
+                                        key={tech.name}
+                                        className={`inline-flex items-center gap-2 px-2.5 py-1.5 rounded-lg border text-[11px] font-medium transition-colors ${isDark ? "border-white/8 bg-white/[0.02] text-zinc-400 hover:bg-white/[0.05] hover:text-white" : "border-zinc-200 bg-zinc-50 text-zinc-500 hover:bg-zinc-100 hover:text-zinc-800"}`}
+                                    >
+                                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                                        <img src={`https://skillicons.dev/icons?i=${tech.icon}`} alt={tech.name} className="w-4 h-4" loading="lazy" />
+                                        {tech.name}
+                                    </div>
+                                ))}
                             </div>
-                        ))}
-                    </div>
-                </div>
-
-                {/* ══════════ github readme embed ══════════ */}
-                <div className="mb-20">
-                    <div className="flex items-center gap-4 mb-8">
-                        <div className={`h-px flex-1 bg-gradient-to-r to-transparent ${isDark ? "from-white/10" : "from-black/10"}`} />
-                        <span className={`text-[10px] font-mono uppercase tracking-widest ${isDark ? "text-zinc-600" : "text-zinc-500"}`}>
-                            GitHub Stats
-                        </span>
-                        <div className={`h-px flex-1 bg-gradient-to-l to-transparent ${isDark ? "from-white/10" : "from-black/10"}`} />
-                    </div>
-
-                    <div className="flex flex-col items-center justify-center gap-4">
-                        <div className="flex flex-wrap items-center justify-center gap-4">
-                            {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img
-                                src="https://awesome-github-stats.azurewebsites.net/user-stats/LaxentaInc?theme=dark&cardType=level"
-                                alt="GitHub Stats"
-                                className="h-[185px] rounded-xl"
-                                loading="lazy"
-                            />
-                            {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img
-                                src="https://github-readme-streak-stats-steel-pi.vercel.app/?user=LaxentaInc&private=true&theme=dark&hide_border=false&date_format=j%20M%5B%20Y%5D&mode=weekly"
-                                alt="GitHub Streak Weekly"
-                                className="h-[185px] rounded-xl"
-                                loading="lazy"
-                            />
                         </div>
+
+                        {/* stats card */}
+                        <div className={`rounded-2xl border p-6 ${isDark ? "border-white/8 bg-white/[0.02]" : "border-zinc-200 bg-white"}`}>
+                            <h3 className={`text-[11px] font-mono font-bold uppercase tracking-[0.15em] mb-5 ${isDark ? "text-zinc-500" : "text-zinc-400"}`}>
+                                GitHub
+                            </h3>
+                            <div className="flex flex-col gap-3">
+                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                <img src="https://awesome-github-stats.azurewebsites.net/user-stats/LaxentaInc?theme=dark&cardType=level" alt="GitHub Stats" className="w-full max-h-[160px] object-contain rounded-lg" loading="lazy" />
+                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                <img src="https://github-readme-streak-stats-steel-pi.vercel.app/?user=LaxentaInc&private=true&theme=dark&hide_border=false&date_format=j%20M%5B%20Y%5D&mode=weekly" alt="GitHub Streak Weekly" className="w-full max-h-[160px] object-contain rounded-lg" loading="lazy" />
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* full-width streak below */}
+                    <div className="mt-4 flex justify-center">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                            src="https://streak-stats.demolab.com?user=LaxentaInc&hide_border=true&background=0d1117&stroke=1e2530&ring=00b4d8&fire=00b4d8&currStreakLabel=00b4d8&sideNums=e0eaff&sideLabels=8ca0c0&dates=8ca0c0&currStreakNum=e0eaff"
-                            alt="GitHub Streak"
-                            className="rounded-xl max-w-full"
-                            loading="lazy"
-                        />
+                        <img src="https://streak-stats.demolab.com?user=LaxentaInc&hide_border=true&background=0d1117&stroke=1e2530&ring=00b4d8&fire=00b4d8&currStreakLabel=00b4d8&sideNums=e0eaff&sideLabels=8ca0c0&dates=8ca0c0&currStreakNum=e0eaff" alt="GitHub Streak" className="rounded-xl max-w-full" loading="lazy" />
                     </div>
                 </div>
 
-                {/* ══════════ bottom note ══════════ */}
+                {/* ══════════ bottom ══════════ */}
                 <div className="text-center">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                        src="https://raw.githubusercontent.com/innng/innng/master/assets/kyubey.gif"
-                        width={32}
-                        alt="kyubey"
-                        className="mx-auto mb-3"
-                    />
+                    <img src="https://raw.githubusercontent.com/innng/innng/master/assets/kyubey.gif" width={32} alt="kyubey" className="mx-auto mb-3" />
                     <p className={`text-sm italic font-medium mb-2 ${isDark ? "text-zinc-400" : "text-zinc-500"}`}>
                         WELL mai real repos are private :c i promise i do stuff
                     </p>
-                    <a
-                        href="https://colorwall.xyz"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className={`text-xs font-mono transition-colors ${isDark ? "text-cyan-500/60 hover:text-cyan-400" : "text-cyan-600/60 hover:text-cyan-600"}`}
-                    >
+                    <a href="https://colorwall.xyz" target="_blank" rel="noopener noreferrer"
+                        className={`text-xs font-mono transition-colors ${isDark ? "text-cyan-500/60 hover:text-cyan-400" : "text-cyan-600/60 hover:text-cyan-600"}`}>
                         https://colorwall.xyz — check it out if you want &lt;.3
                     </a>
                     <p className={`text-xs font-mono flex items-center justify-center gap-1.5 mt-4 ${isDark ? "text-zinc-600" : "text-zinc-400"}`}>
