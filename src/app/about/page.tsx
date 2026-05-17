@@ -220,7 +220,7 @@ export default function AboutPage() {
                 </div>
 
                 {/* ══════════ bottom ══════════ */}
-                <div className="text-center pt-1 pb-8">
+                <div className="text-center pt-1">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src="https://raw.githubusercontent.com/innng/innng/master/assets/kyubey.gif" width={32} alt="kyubey" className="mx-auto mb-4" />
                     <p className={`text-lg font-medium mb-3 ${isDark ? "text-zinc-500" : "text-zinc-400"}`}>
