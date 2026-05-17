@@ -4,57 +4,31 @@ import { useTheme } from "@/app/contexts/ThemeContext";
 import { Footer } from "@/app/components/Footer";
 import { Github, ExternalLink, Code2, Globe, Heart } from "lucide-react";
 
-// ─── project data ─────────────────────────────────────────────────────────────
+// ─── data ─────────────────────────────────────────────────────────────────────
 
-const PROJECTS = [
-    {
-        name: "ColorWall",
-        tags: ["Rust", "Tauri"],
-        description:
-            "8K live wallpaper & desktop customization engine for Windows 10/11 — shaders, particles, store, library — all in 10mb. 0/72 on VirusTotal.",
-        href: "https://colorwall.xyz",
-        github: "https://github.com/Colorwall",
-    },
-    {
-        name: "MTS Migrator",
-        tags: ["TypeScript"],
-        description:
-            "full code migrator of a javascript project to typescript with type inference and patching with ast! contribute if one can.",
-        href: "https://www.npmjs.com/package/mts-migrator",
-        github: "https://github.com/LaxentaInc/Magikk-Typescript-Migrator",
-    },
-    {
-        name: "periodicwm",
-        tags: ["C++", "X11", "Xlib"],
-        description:
-            "custom X11 window manager + DE built from scratch. collab with a friend (boo he gave up, we suck at c++).",
-        github: "https://github.com/periodicbrake63",
-        collab: "@periodicbrake63",
-    },
+const REPOS = [
+    { name: "ColorWall", lang: "Rust", desc: "8K live wallpaper & desktop customization engine for Windows — shaders, particles, store, library — 10mb.", href: "https://github.com/Colorwall", site: "https://colorwall.xyz" },
+    { name: "MTS Migrator", lang: "TypeScript", desc: "full JS → TS codebase migrator with type inference and AST patching.", href: "https://github.com/LaxentaInc/Magikk-Typescript-Migrator", site: "https://www.npmjs.com/package/mts-migrator" },
+    { name: "Aero-Chan", lang: "TypeScript", desc: "antiraid · music · moderation · tooling — discord bot, source code public.", href: "https://github.com/LaxentaInc/Aero-Chan" },
+    { name: "Wallpaper Archive", lang: "CC0", desc: "public domain wallpaper archive used by colorwall. free for everyone.", href: "https://github.com/LaxentaInc/Wallpaper-Archive" },
+    { name: "Colorwall Interactives", lang: "WebGL", desc: "community interactive wallpapers — one of colorwall's coolest features.", href: "https://github.com/LaxentaInc/Colorwall-Interactives" },
+    { name: "ColorWall Linux", lang: "Rust", desc: "same engine, for linux. open source. coming mid june 2026.", href: "https://github.com/LaxentaInc/WallpaperEngine-Linux" },
+    { name: "periodicwm", lang: "C++", desc: "custom X11 window manager + DE from scratch. collab w/ @periodicbrake63.", href: "https://github.com/periodicbrake63" },
+    { name: "Colorwall Site", lang: "Next.js", desc: "this website you're looking at right now. yes it's mine.", href: "https://github.com/LaxentaInc/Colorwall-Site" },
 ];
 
-const TECH_STACK = [
-    { name: "Rust", icon: "rust" },
-    { name: "TypeScript", icon: "ts" },
-    { name: "JavaScript", icon: "js" },
-    { name: "React", icon: "react" },
-    { name: "Next.js", icon: "nextjs" },
-    { name: "Vite", icon: "vite" },
-    { name: "Tauri", icon: "tauri" },
-    { name: "Electron", icon: "electron" },
-    { name: "MongoDB", icon: "mongodb" },
-    { name: "Kotlin", icon: "kotlin" },
-    { name: "Node.js", icon: "nodejs" },
-    { name: "Git", icon: "git" },
-    { name: "GitHub", icon: "github" },
-    { name: "VS Code", icon: "vscode" },
-];
+const TECH = ["rust", "ts", "js", "react", "nextjs", "vite", "tauri", "electron", "mongodb", "kotlin", "nodejs", "git", "github", "vscode"];
 
 const LINKS = {
     github: "https://github.com/LaxentaInc",
     discord: "https://discord.gg/cHVwPkBC7p",
-    website: "https://colorwall.xyz",
     org: "https://github.com/Colorwall",
+};
+
+const LANG_COLORS: Record<string, string> = {
+    "Rust": "bg-orange-400", "TypeScript": "bg-blue-400", "C++": "bg-pink-400",
+    "CC0": "bg-emerald-400", "WebGL": "bg-purple-400", "Next.js": "bg-white",
+    "Python": "bg-yellow-400",
 };
 
 // ─── page ─────────────────────────────────────────────────────────────────────
@@ -64,20 +38,34 @@ export default function AboutPage() {
     const isDark = theme === "dark";
 
     return (
-        <div className={`min-h-screen [font-family:'DM_Sans',sans-serif] ${isDark ? "bg-[#080809] text-zinc-100" : "bg-slate-50 text-zinc-900"}`}>
-            <main className="relative z-10 max-w-5xl mx-auto px-6 lg:px-12 pt-28 pb-28">
-                <div className="mb-20">
-                    <div className="flex items-center gap-3 mb-7">
-                        <span className="relative flex h-2 w-2">
-                            <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500" />
-                        </span>
-                        <span className="text-[11px] font-mono font-bold uppercase tracking-[0.2em] text-cyan-400">
-                            About · The Team
-                        </span>
-                        <div className="h-px flex-1 max-w-[80px] bg-gradient-to-r from-cyan-500/40 to-transparent" />
-                    </div>
+        <div
+            className={`min-h-screen relative overflow-hidden transition-colors duration-500 ${isDark ? "bg-[#080809] text-zinc-100" : "bg-slate-50 text-zinc-900"}`}
+            style={{ fontFamily: "'DM Sans', 'Geist', sans-serif" }}
+        >
+            {/* ─── ambient background (matches feedback/landing pages) ─── */}
+            <div className={`pointer-events-none fixed inset-0 z-0 ${isDark ? "opacity-[0.035]" : "opacity-[0.05]"}`}
+                style={{
+                    backgroundImage: `url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyBAMAAADsEZWCAAAAGFBMVEUAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAABJz2zMAAAACHRSTlMzMzMzMzMzM8A/4eYAAACbSURBVDjLpZGxDQMwDASJ/y18q0L5K8zM4E5AAXqSBM4+M9d7+E7oO9c5M9d7+E7oO9c5M9d7+E7oO9c5M9d7+E7oO9c5M9d7+E7oO9c5M9d7+E7oO9c5M9d7+E7oO9c5M9d7+E7oO9c5M9d7+E7oO9c5M9d7+E7oO9c5M9d7+E7oO9c5M9d7+E7oO9c5M9d7+E7oO/8Bv9B6wT4CxcwAAAAASUVORK5CYII=")`,
+                    backgroundRepeat: "repeat", backgroundSize: "100px 100px",
+                }} />
+            <div className="pointer-events-none fixed top-[-15%] left-[-5%] w-[55%] h-[55%] rounded-full opacity-40"
+                style={{ background: `radial-gradient(circle, ${isDark ? "rgba(99,102,241,0.12)" : "rgba(99,102,241,0.08)"} 0%, transparent 70%)` }} />
+            <div className="pointer-events-none fixed bottom-[-20%] right-[-10%] w-[50%] h-[50%] rounded-full opacity-30"
+                style={{ background: `radial-gradient(circle, ${isDark ? "rgba(139,92,246,0.10)" : "rgba(139,92,246,0.06)"} 0%, transparent 70%)` }} />
+            <div className="pointer-events-none fixed top-[40%] right-[20%] w-[30%] h-[30%] rounded-full opacity-20"
+                style={{ background: `radial-gradient(circle, ${isDark ? "rgba(6,182,212,0.08)" : "rgba(6,182,212,0.05)"} 0%, transparent 70%)` }} />
+            <div className="fixed top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent z-50" />
 
-                    <h1 className={`text-[clamp(2.5rem,6vw,5rem)] font-black tracking-[-0.04em] leading-[0.9] mb-6 ${isDark ? "text-white" : "text-zinc-900"}`}>
+            <main className="relative z-10 max-w-6xl mx-auto px-6 lg:px-12 pt-32 pb-28">
+
+                {/* ══════════ hero ══════════ */}
+                <div className="mb-24">
+                    <p className={`text-[11px] font-mono font-bold uppercase tracking-[0.25em] mb-5 ${isDark ? "text-cyan-400/70" : "text-cyan-600"}`}>
+                        <span className="inline-block w-2 h-2 rounded-full bg-cyan-500 mr-2 align-middle" />
+                        About · Laxenta Inc
+                    </p>
+
+                    <h1 className={`text-[clamp(3rem,8vw,6.5rem)] font-black tracking-[-0.05em] leading-[0.85] mb-8 ${isDark ? "text-white" : "text-zinc-900"}`}>
                         Built by one
                         <br />
                         <span className="bg-gradient-to-r from-cyan-400 via-blue-400 to-indigo-500 bg-clip-text text-transparent">
@@ -85,255 +73,165 @@ export default function AboutPage() {
                         </span>
                     </h1>
 
-                    <p className={`text-base max-w-xl leading-relaxed ${isDark ? "text-zinc-400" : "text-zinc-600"}`}>
-                        ColorWall is a project by <strong className={isDark ? "text-white" : "text-zinc-800"}>Uh... me! cz my dev friends have even worse adhd so they never helped much</strong> I am an 18-year-old hobbyist  
-                        developer (since 15) who wanted to make something cooler than my ex's ArchiveTune (kotlin music player).
-                        Every line of code is written with love, well kinda i guess? ngl more out of coping from life and so many breakups, ehh ignore it
+                    <p className={`text-lg sm:text-xl max-w-2xl leading-relaxed font-[350] ${isDark ? "text-zinc-400" : "text-zinc-500"}`}>
+                        ColorWall is a project by <strong className={isDark ? "text-white font-semibold" : "text-zinc-800 font-semibold"}>Uh... me!</strong> cz my dev friends have even worse adhd so they never helped much.
+                        I am an 18-year-old hobbyist developer (since 15) who wanted to make something cooler than my ex&apos;s ArchiveTune.
+                        Every line of code is written with love, well kinda i guess? ngl more out of coping from life, ehh ignore it
                     </p>
                 </div>
 
-
-           <div className="mb-12 rounded-2xl overflow-hidden">
+                {/* ══════════ banner ══════════ */}
+                <div className="mb-24 -mx-6 lg:-mx-12">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                         src="https://github.com/user-attachments/assets/fd8574e6-3f1c-4386-9a81-0332f43f8bce"
                         alt="LaxentaInc Banner"
-                        className="w-full h-auto object-cover rounded-2xl"
+                        className="w-full h-auto"
                         loading="eager"
                     />
                 </div>
-                {/* ══════════ developer card ══════════ */}
-                <div className={`rounded-2xl border overflow-hidden mb-20 ${isDark ? "border-white/8 bg-white/[0.02]" : "border-zinc-200 bg-white"}`}>
-                    <div className="p-6 sm:p-8">
-                        <div className="flex flex-col sm:flex-row gap-6 items-start">
-                            {/* avatar */}
-                            <div className={`w-20 h-20 rounded-2xl border flex-shrink-0 overflow-hidden ${isDark ? "border-white/10" : "border-zinc-200"}`}>
-                                {/* eslint-disable-next-line @next/next/no-img-element */}
-                                <img
-                                    src="https://github.com/LaxentaInc.png"
-                                    alt="Oliver Laxenta"
-                                    className="w-full h-full object-cover"
-                                    loading="lazy"
-                                />
-                            </div>
 
-                            <div className="flex-1 min-w-0">
-                                <div className="flex items-center gap-3 flex-wrap">
-                                    <h2 className={`text-xl font-black tracking-tight ${isDark ? "text-white" : "text-zinc-900"}`}>
-                                        Oliver Laxenta
-                                    </h2>
-                                    <span className={`text-[9px] font-mono font-bold px-2 py-0.5 rounded border ${isDark ? "bg-cyan-500/10 border-cyan-500/20 text-cyan-400" : "bg-cyan-50 border-cyan-200 text-cyan-600"}`}>
-                                        Developer
-                                    </span>
-                                </div>
+                {/* ══════════ dev profile ══════════ */}
+                <div className="flex flex-col sm:flex-row gap-8 items-start mb-24">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                        src="https://github.com/LaxentaInc.png"
+                        alt="Oliver Laxenta"
+                        className={`w-28 h-28 rounded-3xl border-2 flex-shrink-0 ${isDark ? "border-white/10" : "border-zinc-200"}`}
+                        loading="lazy"
+                    />
+                    <div>
+                        <h2 className={`text-3xl sm:text-4xl font-black tracking-tight mb-1 ${isDark ? "text-white" : "text-zinc-900"}`}>
+                            Oliver Laxenta
+                        </h2>
+                        <p className={`text-sm font-mono mb-4 ${isDark ? "text-zinc-500" : "text-zinc-400"}`}>
+                            @LaxentaInc · Laxenta Inc
+                        </p>
+                        <p className={`text-base leading-relaxed mb-5 max-w-xl ${isDark ? "text-zinc-400" : "text-zinc-500"}`}>
+                            Nunca te amé, pero lo estaba intentando. Well i am not spainish but the quote is for a specific someone who is
+                        </p>
 
-                                <p className={`text-[13px] mt-1 ${isDark ? "text-zinc-500" : "text-zinc-500"}`}>
-                                    @LaxentaInc · Laxenta Inc
-                                </p>
-
-                                <p className={`text-sm mt-3 leading-relaxed ${isDark ? "text-zinc-400" : "text-zinc-600"}`}>
-                                    Nunca te amé, pero lo estaba intentando. Well i am not spainish but the quote is for a specific someone who is
-                                </p>
-
-                                <div className="flex items-center gap-3 mt-4 flex-wrap">
-                                    <a
-                                        href={LINKS.github}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className={`inline-flex items-center gap-1.5 text-xs font-mono font-semibold px-3 py-1.5 rounded-lg transition-colors ${isDark ? "bg-white/5 text-white/70 hover:bg-white/10 hover:text-white" : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200 hover:text-zinc-900"}`}
-                                    >
-                                        <Github className="w-3.5 h-3.5" />
-                                        GitHub
-                                    </a>
-                                    <a
-                                        href={LINKS.org}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className={`inline-flex items-center gap-1.5 text-xs font-mono font-semibold px-3 py-1.5 rounded-lg transition-colors ${isDark ? "bg-white/5 text-white/70 hover:bg-white/10 hover:text-white" : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200 hover:text-zinc-900"}`}
-                                    >
-                                        <Code2 className="w-3.5 h-3.5" />
-                                        Colorwall Org
-                                    </a>
-                                    <a
-                                        href={LINKS.discord}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className={`inline-flex items-center gap-1.5 text-xs font-mono font-semibold px-3 py-1.5 rounded-lg transition-colors ${isDark ? "bg-indigo-500/10 text-indigo-400 hover:bg-indigo-500/20" : "bg-indigo-50 text-indigo-600 hover:bg-indigo-100"}`}
-                                    >
-                                        <Globe className="w-3.5 h-3.5" />
-                                        Discord
-                                    </a>
-                                </div>
-                            </div>
+                        <div className="flex items-center gap-2.5 flex-wrap">
+                            <a href={LINKS.github} target="_blank" rel="noopener noreferrer"
+                                className={`inline-flex items-center gap-1.5 text-xs font-semibold px-3.5 py-2 rounded-xl transition-all duration-200 hover:-translate-y-0.5 ${isDark ? "bg-white/5 text-white/70 hover:bg-white/10 hover:text-white border border-white/8" : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200 hover:text-zinc-900 border border-zinc-200"}`}>
+                                <Github className="w-3.5 h-3.5" /> GitHub
+                            </a>
+                            <a href={LINKS.org} target="_blank" rel="noopener noreferrer"
+                                className={`inline-flex items-center gap-1.5 text-xs font-semibold px-3.5 py-2 rounded-xl transition-all duration-200 hover:-translate-y-0.5 ${isDark ? "bg-white/5 text-white/70 hover:bg-white/10 hover:text-white border border-white/8" : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200 hover:text-zinc-900 border border-zinc-200"}`}>
+                                <Code2 className="w-3.5 h-3.5" /> Colorwall Org
+                            </a>
+                            <a href={LINKS.discord} target="_blank" rel="noopener noreferrer"
+                                className={`inline-flex items-center gap-1.5 text-xs font-semibold px-3.5 py-2 rounded-xl transition-all duration-200 hover:-translate-y-0.5 ${isDark ? "bg-indigo-500/10 text-indigo-400 hover:bg-indigo-500/20 border border-indigo-500/20" : "bg-indigo-50 text-indigo-600 hover:bg-indigo-100 border border-indigo-200"}`}>
+                                <Globe className="w-3.5 h-3.5" /> Dihcord
+                            </a>
                         </div>
                     </div>
                 </div>
 
-                {/* ══════════ what is colorwall ══════════ */}
-                <div className="mb-20">
-                    <div className="flex items-center gap-4 mb-8">
-                        <div className={`h-px flex-1 bg-gradient-to-r to-transparent ${isDark ? "from-white/10" : "from-black/10"}`} />
-                        <span className={`text-[10px] font-mono uppercase tracking-widest ${isDark ? "text-zinc-600" : "text-zinc-500"}`}>
-                            What is ColorWall
-                        </span>
-                        <div className={`h-px flex-1 bg-gradient-to-l to-transparent ${isDark ? "from-white/10" : "from-black/10"}`} />
-                    </div>
-
-                    <div className={`rounded-2xl border p-6 sm:p-8 ${isDark ? "border-white/8 bg-white/[0.02]" : "border-zinc-200 bg-white"}`}>
-                        <p className={`text-sm leading-[1.8] ${isDark ? "text-zinc-400" : "text-zinc-600"}`}>
-                            <strong className={isDark ? "text-white" : "text-zinc-800"}>ColorWall</strong> is a free, open-source desktop customization engine
-                            for Windows 10 and 11. built with <strong className={isDark ? "text-white" : "text-zinc-800"}>Rust + Tauri</strong>, it
-                            delivers 8K video wallpapers, real-time D3D11 shader effects, particle systems, audio-reactive visuals, desktop widgets,
-                            and taskbar customization — all in a ~10MB package with near-zero CPU overhead.
+                {/* ══════════ colorwall description ══════════ */}
+                <div className="mb-24">
+                    <h2 className={`text-[clamp(2rem,5vw,3.5rem)] font-black tracking-[-0.04em] leading-[0.9] mb-6 ${isDark ? "text-white" : "text-zinc-900"}`}>
+                        What is{" "}
+                        <span className="bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">ColorWall</span>
+                    </h2>
+                    <div className="max-w-3xl space-y-4">
+                        <p className={`text-base sm:text-lg leading-[1.8] font-[350] ${isDark ? "text-zinc-400" : "text-zinc-500"}`}>
+                            A free desktop customization engine for Windows 10/11. Built in <strong className={isDark ? "text-white font-semibold" : "text-zinc-800 font-semibold"}>Rust + Tauri</strong> —
+                            8K video wallpapers, real-time D3D11 shader effects, particle systems, audio-reactive visuals, desktop widgets,
+                            and taskbar customization. All in ~10MB with near-zero CPU overhead.
                         </p>
-                        <p className={`text-sm leading-[1.8] mt-4 ${isDark ? "text-zinc-400" : "text-zinc-600"}`}>
-                            it comes with a built-in store aggregating wallpapers from 8+ sources, a local library with offline-first design,
-                            and a node-based studio editor for creating custom scene compositions. no accounts, no subscriptions, no telemetry.
-                            0/72 on VirusTotal. just a wallpaper engine that respects you.
+                        <p className={`text-base sm:text-lg leading-[1.8] font-[350] ${isDark ? "text-zinc-400" : "text-zinc-500"}`}>
+                            Built-in store aggregating wallpapers from 8+ sources, offline-first library,
+                            node-based studio editor for scene compositions. No accounts, no subs, no telemetry.
+                            <strong className={isDark ? "text-white font-semibold" : "text-zinc-800 font-semibold"}> 0/72 on VirusTotal.</strong>
                         </p>
                     </div>
                 </div>
 
-                {/* ══════════ projects ══════════ */}
-                <div className="mb-20">
-                    <div className="flex items-center gap-4 mb-8">
-                        <div className={`h-px flex-1 bg-gradient-to-r to-transparent ${isDark ? "from-white/10" : "from-black/10"}`} />
-                        <span className={`text-[10px] font-mono uppercase tracking-widest ${isDark ? "text-zinc-600" : "text-zinc-500"}`}>
-                            Projects
-                        </span>
-                        <div className={`h-px flex-1 bg-gradient-to-l to-transparent ${isDark ? "from-white/10" : "from-black/10"}`} />
-                    </div>
+                {/* ══════════ repositories ══════════ */}
+                <div className="mb-24">
+                    <h2 className={`text-[clamp(2rem,5vw,3.5rem)] font-black tracking-[-0.04em] leading-[0.9] mb-3 ${isDark ? "text-white" : "text-zinc-900"}`}>
+                        Repositories
+                    </h2>
+                    <p className={`text-sm mb-10 ${isDark ? "text-zinc-500" : "text-zinc-400"}`}>
+                        the ones that aren&apos;t private anyway :c
+                    </p>
 
-                    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                        {PROJECTS.map((project) => (
+                    <div className="grid gap-px sm:grid-cols-2 rounded-2xl overflow-hidden">
+                        {REPOS.map((repo) => (
                             <a
-                                key={project.name}
-                                href={project.github || project.href}
+                                key={repo.name}
+                                href={repo.href}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className={`block rounded-xl border p-5 transition-all duration-200 group cursor-pointer hover:-translate-y-0.5 ${isDark ? "border-white/8 bg-white/[0.02] hover:bg-white/[0.05] hover:border-white/12" : "border-zinc-200 bg-white hover:bg-zinc-50 hover:shadow-md"}`}
+                                className={`group block p-6 transition-all duration-200 cursor-pointer ${isDark ? "bg-white/[0.02] hover:bg-white/[0.06]" : "bg-white hover:bg-zinc-50"}`}
                             >
-                                <div className="flex items-center gap-2 mb-3">
-                                    <h3 className={`text-sm font-bold tracking-tight ${isDark ? "text-white" : "text-zinc-900"}`}>
-                                        {project.name}
+                                <div className="flex items-center gap-2.5 mb-2">
+                                    <span className={`w-2.5 h-2.5 rounded-full ${LANG_COLORS[repo.lang] || "bg-zinc-400"}`} />
+                                    <h3 className={`text-[15px] font-bold tracking-tight ${isDark ? "text-white" : "text-zinc-900"}`}>
+                                        {repo.name}
                                     </h3>
-                                    {project.collab && (
-                                        <span className={`text-[9px] font-mono px-1.5 py-0.5 rounded ${isDark ? "bg-white/5 text-zinc-500" : "bg-zinc-100 text-zinc-500"}`}>
-                                            {project.collab}
-                                        </span>
-                                    )}
-                                    <ExternalLink className={`w-3 h-3 ml-auto opacity-0 group-hover:opacity-50 transition-opacity ${isDark ? "text-white" : "text-zinc-400"}`} />
+                                    <span className={`text-[10px] font-mono ml-auto ${isDark ? "text-zinc-600" : "text-zinc-400"}`}>
+                                        {repo.lang}
+                                    </span>
+                                    <ExternalLink className={`w-3.5 h-3.5 opacity-0 group-hover:opacity-50 transition-opacity ${isDark ? "text-white" : "text-zinc-400"}`} />
                                 </div>
-
-                                <div className="flex flex-wrap gap-1.5 mb-3">
-                                    {project.tags.map((tag) => (
-                                        <span
-                                            key={tag}
-                                            className={`text-[9px] font-mono font-bold px-1.5 py-0.5 rounded ${isDark ? "bg-cyan-500/10 text-cyan-400 border border-cyan-500/20" : "bg-cyan-50 text-cyan-600 border border-cyan-200"}`}
-                                        >
-                                            {tag}
-                                        </span>
-                                    ))}
-                                </div>
-
-                                <p className={`text-[12px] leading-relaxed mb-3 ${isDark ? "text-zinc-500" : "text-zinc-500"}`}>
-                                    {project.description}
+                                <p className={`text-[13px] leading-relaxed ${isDark ? "text-zinc-500" : "text-zinc-500"}`}>
+                                    {repo.desc}
                                 </p>
-
-                                {/* secondary links — stop propagation so they work independently */}
-                                <div className="flex items-center gap-3" onClick={(e) => e.stopPropagation()}>
-                                    {project.github && (
-                                        <a
-                                            href={project.github}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className={`inline-flex items-center gap-1 text-[10px] font-mono transition-colors relative z-10 ${isDark ? "text-zinc-500 hover:text-white" : "text-zinc-400 hover:text-zinc-800"}`}
-                                        >
-                                            <Github className="w-3 h-3" />
-                                            Source
-                                        </a>
-                                    )}
-                                    {project.href && (
-                                        <a
-                                            href={project.href}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className={`inline-flex items-center gap-1 text-[10px] font-mono transition-colors relative z-10 ${isDark ? "text-cyan-500/60 hover:text-cyan-400" : "text-cyan-600/60 hover:text-cyan-600"}`}
-                                        >
-                                            <ExternalLink className="w-3 h-3" />
-                                            Visit
-                                        </a>
-                                    )}
-                                </div>
+                                {repo.site && (
+                                    <span className={`inline-block text-[10px] font-mono mt-2 ${isDark ? "text-cyan-500/50" : "text-cyan-600/50"}`}>
+                                        {repo.site.replace("https://", "")}
+                                    </span>
+                                )}
                             </a>
                         ))}
                     </div>
                 </div>
 
-                {/* ══════════ stack & stats — combined layout ══════════ */}
-                <div className="mb-20">
-                    <div className="flex items-center gap-4 mb-8">
-                        <div className={`h-px flex-1 bg-gradient-to-r to-transparent ${isDark ? "from-white/10" : "from-black/10"}`} />
-                        <span className={`text-[10px] font-mono uppercase tracking-widest ${isDark ? "text-zinc-600" : "text-zinc-500"}`}>
-                            Stack & Stats
-                        </span>
-                        <div className={`h-px flex-1 bg-gradient-to-l to-transparent ${isDark ? "from-white/10" : "from-black/10"}`} />
+                {/* ══════════ stack ══════════ */}
+                <div className="mb-24">
+                    <h2 className={`text-[clamp(2rem,5vw,3.5rem)] font-black tracking-[-0.04em] leading-[0.9] mb-8 ${isDark ? "text-white" : "text-zinc-900"}`}>
+                        Stack
+                    </h2>
+                    <div className="flex flex-wrap gap-3">
+                        {TECH.map((t) => (
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img key={t} src={`https://skillicons.dev/icons?i=${t}`} alt={t} className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl hover:scale-110 transition-transform duration-200" loading="lazy" />
+                        ))}
                     </div>
+                </div>
 
-                    <div className="grid gap-4 lg:grid-cols-2">
-                        {/* tech stack card */}
-                        <div className={`rounded-2xl border p-6 ${isDark ? "border-white/8 bg-white/[0.02]" : "border-zinc-200 bg-white"}`}>
-                            <h3 className={`text-[11px] font-mono font-bold uppercase tracking-[0.15em] mb-5 ${isDark ? "text-zinc-500" : "text-zinc-400"}`}>
-                                Technologies
-                            </h3>
-                            <div className="flex flex-wrap gap-2">
-                                {TECH_STACK.map((tech) => (
-                                    <div
-                                        key={tech.name}
-                                        className={`inline-flex items-center gap-2 px-2.5 py-1.5 rounded-lg border text-[11px] font-medium transition-colors ${isDark ? "border-white/8 bg-white/[0.02] text-zinc-400 hover:bg-white/[0.05] hover:text-white" : "border-zinc-200 bg-zinc-50 text-zinc-500 hover:bg-zinc-100 hover:text-zinc-800"}`}
-                                    >
-                                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                                        <img src={`https://skillicons.dev/icons?i=${tech.icon}`} alt={tech.name} className="w-4 h-4" loading="lazy" />
-                                        {tech.name}
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-
-                        {/* stats card */}
-                        <div className={`rounded-2xl border p-6 ${isDark ? "border-white/8 bg-white/[0.02]" : "border-zinc-200 bg-white"}`}>
-                            <h3 className={`text-[11px] font-mono font-bold uppercase tracking-[0.15em] mb-5 ${isDark ? "text-zinc-500" : "text-zinc-400"}`}>
-                                GitHub
-                            </h3>
-                            <div className="flex flex-col gap-3">
-                                {/* eslint-disable-next-line @next/next/no-img-element */}
-                                <img src="https://awesome-github-stats.azurewebsites.net/user-stats/LaxentaInc?theme=dark&cardType=level" alt="GitHub Stats" className="w-full max-h-[160px] object-contain rounded-lg" loading="lazy" />
-                                {/* eslint-disable-next-line @next/next/no-img-element */}
-                                <img src="https://github-readme-streak-stats-steel-pi.vercel.app/?user=LaxentaInc&private=true&theme=dark&hide_border=false&date_format=j%20M%5B%20Y%5D&mode=weekly" alt="GitHub Streak Weekly" className="w-full max-h-[160px] object-contain rounded-lg" loading="lazy" />
-                            </div>
-                        </div>
+                {/* ══════════ stats ══════════ */}
+                <div className="mb-24">
+                    <h2 className={`text-[clamp(2rem,5vw,3.5rem)] font-black tracking-[-0.04em] leading-[0.9] mb-8 ${isDark ? "text-white" : "text-zinc-900"}`}>
+                        Stats
+                    </h2>
+                    <div className="flex flex-wrap gap-4">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src="https://awesome-github-stats.azurewebsites.net/user-stats/LaxentaInc?theme=dark&cardType=level" alt="GitHub Stats" className="h-[180px] rounded-xl" loading="lazy" />
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src="https://github-readme-streak-stats-steel-pi.vercel.app/?user=LaxentaInc&private=true&theme=dark&hide_border=false&date_format=j%20M%5B%20Y%5D&mode=weekly" alt="GitHub Streak Weekly" className="h-[180px] rounded-xl" loading="lazy" />
                     </div>
-
-                    {/* full-width streak below */}
-                    <div className="mt-4 flex justify-center">
+                    <div className="mt-4">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img src="https://streak-stats.demolab.com?user=LaxentaInc&hide_border=true&background=0d1117&stroke=1e2530&ring=00b4d8&fire=00b4d8&currStreakLabel=00b4d8&sideNums=e0eaff&sideLabels=8ca0c0&dates=8ca0c0&currStreakNum=e0eaff" alt="GitHub Streak" className="rounded-xl max-w-full" loading="lazy" />
                     </div>
                 </div>
 
                 {/* ══════════ bottom ══════════ */}
-                <div className="text-center">
+                <div className="text-center pt-8">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src="https://raw.githubusercontent.com/innng/innng/master/assets/kyubey.gif" width={32} alt="kyubey" className="mx-auto mb-3" />
-                    <p className={`text-sm italic font-medium mb-2 ${isDark ? "text-zinc-400" : "text-zinc-500"}`}>
+                    <img src="https://raw.githubusercontent.com/innng/innng/master/assets/kyubey.gif" width={32} alt="kyubey" className="mx-auto mb-4" />
+                    <p className={`text-lg italic font-medium mb-3 ${isDark ? "text-zinc-500" : "text-zinc-400"}`}>
                         WELL mai real repos are private :c i promise i do stuff
                     </p>
                     <a href="https://colorwall.xyz" target="_blank" rel="noopener noreferrer"
-                        className={`text-xs font-mono transition-colors ${isDark ? "text-cyan-500/60 hover:text-cyan-400" : "text-cyan-600/60 hover:text-cyan-600"}`}>
-                        https://colorwall.xyz — check it out if you want &lt;.3
+                        className={`text-sm font-mono transition-colors ${isDark ? "text-cyan-500/50 hover:text-cyan-400" : "text-cyan-600/50 hover:text-cyan-600"}`}>
+                        colorwall.xyz — check it out if you want &lt;.3
                     </a>
-                    <p className={`text-xs font-mono flex items-center justify-center gap-1.5 mt-4 ${isDark ? "text-zinc-600" : "text-zinc-400"}`}>
-                        made with <Heart className="w-3 h-3 text-rose-500" /> by laxenta inc
+                    <p className={`text-sm flex items-center justify-center gap-2 mt-6 ${isDark ? "text-zinc-600" : "text-zinc-400"}`}>
+                        made with <Heart className="w-3.5 h-3.5 text-rose-500" /> by laxenta inc
                     </p>
                 </div>
 
