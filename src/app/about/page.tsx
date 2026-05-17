@@ -3,6 +3,7 @@
 import { useTheme } from "@/app/contexts/ThemeContext";
 import { Footer } from "@/app/components/Footer";
 import { Github, ExternalLink, Code2, Globe, Heart } from "lucide-react";
+import { GradientHeading } from "../components/landing/GradientHeading";
 
 // ─── data ─────────────────────────────────────────────────────────────────────
 
@@ -68,9 +69,7 @@ export default function AboutPage() {
                     <h1 className={`text-[clamp(3rem,8vw,6.5rem)] font-black tracking-[-0.05em] leading-[0.85] mb-8 ${isDark ? "text-white" : "text-zinc-900"}`}>
                         Built by one
                         <br />
-                        <span className="bg-gradient-to-r from-cyan-400 via-blue-400 to-indigo-500 bg-clip-text text-transparent">
-                            stubborn dev.
-                        </span>
+                        <GradientHeading text="stubborn dev." theme="dark" as="span" className="inline-block px-1" />
                     </h1>
 
                     <p className={`text-lg sm:text-xl max-w-2xl leading-relaxed font-[350] ${isDark ? "text-zinc-400" : "text-zinc-500"}`}>
@@ -137,8 +136,11 @@ export default function AboutPage() {
                     <div className="max-w-3xl space-y-4">
                         <p className={`text-base sm:text-lg leading-[1.8] font-[350] ${isDark ? "text-zinc-400" : "text-zinc-500"}`}>
                             A free desktop customization engine for Windows 10/11. Built in <strong className={isDark ? "text-white font-semibold" : "text-zinc-800 font-semibold"}>Rust + Tauri</strong> —
-                            8K video wallpapers, real-time D3D11 shader effects, particle systems, audio-reactive visuals, desktop widgets,
-                            and taskbar customization. All in ~10MB with near-zero CPU overhead.
+                            8K/4k video wallpapers, real-time D3D11 shader effects, particle systems, audio-reactive visuals, desktop widgets,
+                            and taskbar customization.
+                        </p>
+                        <p className={`text-base sm:text-lg leading-[1.8] font-[350] ${isDark ? "text-zinc-400" : "text-zinc-500"}`}>
+                            <GradientHeading text="All while maintaining extremely less Power usage And GPU/CPU (around 3-7% on a lower-end gpu!)" theme="dark" as="span" className="inline-block px-1" />
                         </p>
                         <p className={`text-base sm:text-lg leading-[1.8] font-[350] ${isDark ? "text-zinc-400" : "text-zinc-500"}`}>
                             Built-in store aggregating wallpapers from 8+ sources, offline-first library,
